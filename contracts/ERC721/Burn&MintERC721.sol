@@ -35,6 +35,7 @@ contract XBurnMintERC721 is
         setFinality(1);
         setEvmChainId(block.chainid);
         setBaseUri(baseUri);
+        _setRoleAdmin(bytes32(0),addressToBytes(_msgSender()));
     }
 
     function _burn(uint256 tokenId)
