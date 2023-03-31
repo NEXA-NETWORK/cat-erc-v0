@@ -918,7 +918,7 @@ export interface XBurnMintERC721 extends BaseContract {
     bridgeIn(
       encodedVM: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
 
     bridgeOut(
       tokenId: PromiseOrValue<BigNumberish>,

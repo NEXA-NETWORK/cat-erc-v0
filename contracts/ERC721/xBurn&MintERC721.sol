@@ -119,7 +119,7 @@ contract XBurnMintERC721 is
         return sequence;
     }
 
-    function bridgeIn(bytes calldata encodedVM) public {
+    function bridgeIn(bytes calldata encodedVM) public returns (bytes memory) {
         (WormholeStructs.VM memory vm, bool valid, string memory reason) = wormhole()
             .parseAndVerifyVM(encodedVM);
         require(valid, reason);
@@ -142,6 +142,8 @@ contract XBurnMintERC721 is
             transfer.toChain,
             transfer.toAddress
         );
+
+        return vm.payload;
     }
 
     function mint(address to) public {

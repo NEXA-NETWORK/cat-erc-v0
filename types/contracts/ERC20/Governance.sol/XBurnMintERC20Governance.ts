@@ -32,7 +32,7 @@ export declare namespace XBurnMintERC20Structs {
     amount: PromiseOrValue<BigNumberish>;
     tokenAddress: PromiseOrValue<BytesLike>;
     tokenChain: PromiseOrValue<BigNumberish>;
-    to: PromiseOrValue<BytesLike>;
+    toAddress: PromiseOrValue<BytesLike>;
     toChain: PromiseOrValue<BigNumberish>;
   };
 
@@ -46,7 +46,7 @@ export declare namespace XBurnMintERC20Structs {
     amount: BigNumber;
     tokenAddress: string;
     tokenChain: number;
-    to: string;
+    toAddress: string;
     toChain: number;
   };
 }

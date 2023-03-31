@@ -33,7 +33,7 @@ export declare namespace XBurnMintERC20Structs {
     amount: PromiseOrValue<BigNumberish>;
     tokenAddress: PromiseOrValue<BytesLike>;
     tokenChain: PromiseOrValue<BigNumberish>;
-    to: PromiseOrValue<BytesLike>;
+    toAddress: PromiseOrValue<BytesLike>;
     toChain: PromiseOrValue<BigNumberish>;
   };
 
@@ -47,7 +47,7 @@ export declare namespace XBurnMintERC20Structs {
     amount: BigNumber;
     tokenAddress: string;
     tokenChain: number;
-    to: string;
+    toAddress: string;
     toChain: number;
   };
 }
@@ -302,11 +302,15 @@ export interface XBurnMintERC20Interface extends utils.Interface {
     "Approval(address,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
+    "bridgeInEvent(uint256,uint256,uint256,bytes32)": EventFragment;
+    "bridgeOutEvent(uint256,uint256,uint256,bytes32,bytes32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "bridgeInEvent"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "bridgeOutEvent"): EventFragment;
 }
 
 export interface ApprovalEventObject {
@@ -344,6 +348,33 @@ export type TransferEvent = TypedEvent<
 >;
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
+
+export interface bridgeInEventEventObject {
+  tokenAmount: BigNumber;
+  fromChain: BigNumber;
+  toChain: BigNumber;
+  toAddress: string;
+}
+export type bridgeInEventEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, string],
+  bridgeInEventEventObject
+>;
+
+export type bridgeInEventEventFilter = TypedEventFilter<bridgeInEventEvent>;
+
+export interface bridgeOutEventEventObject {
+  tokenAmount: BigNumber;
+  fromChain: BigNumber;
+  toChain: BigNumber;
+  fromAddress: string;
+  toAddress: string;
+}
+export type bridgeOutEventEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, string, string],
+  bridgeOutEventEventObject
+>;
+
+export type bridgeOutEventEventFilter = TypedEventFilter<bridgeOutEventEvent>;
 
 export interface XBurnMintERC20 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -795,6 +826,34 @@ export interface XBurnMintERC20 extends BaseContract {
       to?: PromiseOrValue<string> | null,
       value?: null
     ): TransferEventFilter;
+
+    "bridgeInEvent(uint256,uint256,uint256,bytes32)"(
+      tokenAmount?: null,
+      fromChain?: null,
+      toChain?: null,
+      toAddress?: PromiseOrValue<BytesLike> | null
+    ): bridgeInEventEventFilter;
+    bridgeInEvent(
+      tokenAmount?: null,
+      fromChain?: null,
+      toChain?: null,
+      toAddress?: PromiseOrValue<BytesLike> | null
+    ): bridgeInEventEventFilter;
+
+    "bridgeOutEvent(uint256,uint256,uint256,bytes32,bytes32)"(
+      tokenAmount?: null,
+      fromChain?: null,
+      toChain?: null,
+      fromAddress?: PromiseOrValue<BytesLike> | null,
+      toAddress?: PromiseOrValue<BytesLike> | null
+    ): bridgeOutEventEventFilter;
+    bridgeOutEvent(
+      tokenAmount?: null,
+      fromChain?: null,
+      toChain?: null,
+      fromAddress?: PromiseOrValue<BytesLike> | null,
+      toAddress?: PromiseOrValue<BytesLike> | null
+    ): bridgeOutEventEventFilter;
   };
 
   estimateGas: {

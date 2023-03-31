@@ -80,6 +80,74 @@ const _abi = [
     type: "event",
   },
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenAmount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "fromChain",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "toChain",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "toAddress",
+        type: "bytes32",
+      },
+    ],
+    name: "bridgeInEvent",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tokenAmount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "fromChain",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "toChain",
+        type: "uint256",
+      },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "fromAddress",
+        type: "bytes32",
+      },
+      {
+        indexed: true,
+        internalType: "bytes32",
+        name: "toAddress",
+        type: "bytes32",
+      },
+    ],
+    name: "bridgeOutEvent",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -292,7 +360,7 @@ const _abi = [
           },
           {
             internalType: "bytes32",
-            name: "to",
+            name: "toAddress",
             type: "bytes32",
           },
           {
@@ -354,7 +422,7 @@ const _abi = [
           },
           {
             internalType: "bytes32",
-            name: "to",
+            name: "toAddress",
             type: "bytes32",
           },
           {
