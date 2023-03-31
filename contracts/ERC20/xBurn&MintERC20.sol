@@ -17,6 +17,7 @@ abstract contract XBurnMintERC20 is Context, ERC20, XBurnMintERC20Governance, XB
         string memory name,
         string memory symbol,
         uint256 parentChainIdEVM,
+        address nativeToken,
         uint16 chainId,
         address wormhole,
         uint8 finality
@@ -26,6 +27,7 @@ abstract contract XBurnMintERC20 is Context, ERC20, XBurnMintERC20Governance, XB
         setFinality(finality);
         setEvmChainId(block.chainid);
         setParentChainIdEVM(parentChainIdEVM);
+        setNativeAsset(nativeToken);
     }
 
     /**
@@ -103,6 +105,7 @@ abstract contract XBurnMintERC20 is Context, ERC20, XBurnMintERC20Governance, XB
     }
 
     function wrap(uint256 _amount, address _recipient) public {
+        require(nativeAsset() != address(0), "native token not set");
         require(block.chainid == parentChainIdEVM(), "only parent chain wrapping allowed");
         IERC20 token = IERC20(nativeAsset());
 
@@ -115,9 +118,6 @@ abstract contract XBurnMintERC20 is Context, ERC20, XBurnMintERC20Governance, XB
 
     function unwrap(uint256 _amount, address _recipient) public {
         IERC20 token = IERC20(nativeAsset());
-
-        require(this.allowance(msg.sender, address(this)) >= _amount, "not enough allowance");
-        require(this.balanceOf(msg.sender) >= _amount, "low balance");
 
         _burn(msg.sender, _amount);
         token.transfer(_recipient, _amount);

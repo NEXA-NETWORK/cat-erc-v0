@@ -66,6 +66,7 @@ export interface XBurnMintERC20GovernanceInterface extends utils.Interface {
     "parentChainIdEVM()": FunctionFragment;
     "registerChain(uint16,bytes32)": FunctionFragment;
     "registerChains(uint16[],bytes32[])": FunctionFragment;
+    "registerNativeToken(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "tokenContracts(uint16)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -88,6 +89,7 @@ export interface XBurnMintERC20GovernanceInterface extends utils.Interface {
       | "parentChainIdEVM"
       | "registerChain"
       | "registerChains"
+      | "registerNativeToken"
       | "renounceOwnership"
       | "tokenContracts"
       | "transferOwnership"
@@ -137,6 +139,10 @@ export interface XBurnMintERC20GovernanceInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "registerChains",
     values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "registerNativeToken",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -194,6 +200,10 @@ export interface XBurnMintERC20GovernanceInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "registerChains",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "registerNativeToken",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -313,6 +323,11 @@ export interface XBurnMintERC20Governance extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    registerNativeToken(
+      _token: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -384,6 +399,11 @@ export interface XBurnMintERC20Governance extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  registerNativeToken(
+    _token: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -452,6 +472,11 @@ export interface XBurnMintERC20Governance extends BaseContract {
     registerChains(
       chainId: PromiseOrValue<BigNumberish>[],
       tokenContract: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    registerNativeToken(
+      _token: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -536,6 +561,11 @@ export interface XBurnMintERC20Governance extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    registerNativeToken(
+      _token: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -605,6 +635,11 @@ export interface XBurnMintERC20Governance extends BaseContract {
     registerChains(
       chainId: PromiseOrValue<BigNumberish>[],
       tokenContract: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    registerNativeToken(
+      _token: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

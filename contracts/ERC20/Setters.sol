@@ -31,7 +31,7 @@ contract XBurnMintERC20Setters is XBurnMintERC20State {
         _state.evmChainId = evmChainId;
     }
 
-    function setNativeAsset(address payable nativeAsset) internal {
+    function setNativeAsset(address nativeAsset) internal {
         _state.nativeAsset = nativeAsset;
     }
 
