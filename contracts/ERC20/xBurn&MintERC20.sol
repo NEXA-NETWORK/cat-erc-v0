@@ -12,16 +12,17 @@ import "./Structs.sol";
 abstract contract XBurnMintERC20 is Context, ERC20, XBurnMintERC20Governance, XBurnMintERC20Events {
     using BytesLib for bytes;
 
-    constructor(uint16 chainId, address wormhole, uint8 finality, uint256 evmChainId) {
+    constructor(
+        string memory name,
+        string memory symbol,
+        uint16 chainId,
+        address wormhole,
+        uint8 finality
+    ) ERC20(name, symbol) Ownable() {
         setChainId(chainId);
-
         setWormhole(wormhole);
-
         setFinality(finality);
-
-        setEvmChainId(evmChainId);
-
-        _transferOwnership(_msgSender());
+        setEvmChainId(block.chainid);
     }
 
     /**

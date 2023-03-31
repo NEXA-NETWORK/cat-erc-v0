@@ -66,6 +66,7 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     "burn(uint256)": FunctionFragment;
     "bytesToAddress(bytes32)": FunctionFragment;
     "chainId()": FunctionFragment;
+    "counter()": FunctionFragment;
     "decodeTransfer(bytes)": FunctionFragment;
     "encodeTransfer((bytes32,uint16,uint256,string,bytes32,uint16))": FunctionFragment;
     "evmChainId()": FunctionFragment;
@@ -74,10 +75,10 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     "isApprovedForAll(address,address)": FunctionFragment;
     "isTransferCompleted(bytes32)": FunctionFragment;
     "mint(address)": FunctionFragment;
-    "mintMultiple(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "parentChainIdEVM()": FunctionFragment;
     "registerChain(uint16,bytes32)": FunctionFragment;
     "registerChains(uint16[],bytes32[])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -109,6 +110,7 @@ export interface XBurnMintERC721Interface extends utils.Interface {
       | "burn"
       | "bytesToAddress"
       | "chainId"
+      | "counter"
       | "decodeTransfer"
       | "encodeTransfer"
       | "evmChainId"
@@ -117,10 +119,10 @@ export interface XBurnMintERC721Interface extends utils.Interface {
       | "isApprovedForAll"
       | "isTransferCompleted"
       | "mint"
-      | "mintMultiple"
       | "name"
       | "owner"
       | "ownerOf"
+      | "parentChainIdEVM"
       | "registerChain"
       | "registerChains"
       | "renounceOwnership"
@@ -176,6 +178,7 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(functionFragment: "chainId", values?: undefined): string;
+  encodeFunctionData(functionFragment: "counter", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "decodeTransfer",
     values: [PromiseOrValue<BytesLike>]
@@ -205,15 +208,15 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     functionFragment: "mint",
     values: [PromiseOrValue<string>]
   ): string;
-  encodeFunctionData(
-    functionFragment: "mintMultiple",
-    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
-  ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "parentChainIdEVM",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "registerChain",
@@ -310,6 +313,7 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "chainId", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "counter", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "decodeTransfer",
     data: BytesLike
@@ -333,13 +337,13 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "mintMultiple",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "parentChainIdEVM",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "registerChain",
     data: BytesLike
@@ -566,6 +570,8 @@ export interface XBurnMintERC721 extends BaseContract {
 
     chainId(overrides?: CallOverrides): Promise<[number]>;
 
+    counter(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     decodeTransfer(
       encoded: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -605,12 +611,6 @@ export interface XBurnMintERC721 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    mintMultiple(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     name(overrides?: CallOverrides): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
@@ -619,6 +619,8 @@ export interface XBurnMintERC721 extends BaseContract {
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    parentChainIdEVM(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
@@ -755,6 +757,8 @@ export interface XBurnMintERC721 extends BaseContract {
 
   chainId(overrides?: CallOverrides): Promise<number>;
 
+  counter(overrides?: CallOverrides): Promise<BigNumber>;
+
   decodeTransfer(
     encoded: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
@@ -790,12 +794,6 @@ export interface XBurnMintERC721 extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  mintMultiple(
-    to: PromiseOrValue<string>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   name(overrides?: CallOverrides): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
@@ -804,6 +802,8 @@ export interface XBurnMintERC721 extends BaseContract {
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  parentChainIdEVM(overrides?: CallOverrides): Promise<BigNumber>;
 
   registerChain(
     chainId: PromiseOrValue<BigNumberish>,
@@ -940,6 +940,8 @@ export interface XBurnMintERC721 extends BaseContract {
 
     chainId(overrides?: CallOverrides): Promise<number>;
 
+    counter(overrides?: CallOverrides): Promise<BigNumber>;
+
     decodeTransfer(
       encoded: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -972,12 +974,6 @@ export interface XBurnMintERC721 extends BaseContract {
 
     mint(to: PromiseOrValue<string>, overrides?: CallOverrides): Promise<void>;
 
-    mintMultiple(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     name(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
@@ -986,6 +982,8 @@ export interface XBurnMintERC721 extends BaseContract {
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    parentChainIdEVM(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
@@ -1193,6 +1191,8 @@ export interface XBurnMintERC721 extends BaseContract {
 
     chainId(overrides?: CallOverrides): Promise<BigNumber>;
 
+    counter(overrides?: CallOverrides): Promise<BigNumber>;
+
     decodeTransfer(
       encoded: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1228,12 +1228,6 @@ export interface XBurnMintERC721 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    mintMultiple(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1242,6 +1236,8 @@ export interface XBurnMintERC721 extends BaseContract {
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    parentChainIdEVM(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
@@ -1379,6 +1375,8 @@ export interface XBurnMintERC721 extends BaseContract {
 
     chainId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
+    counter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     decodeTransfer(
       encoded: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -1414,12 +1412,6 @@ export interface XBurnMintERC721 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    mintMultiple(
-      to: PromiseOrValue<string>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1428,6 +1420,8 @@ export interface XBurnMintERC721 extends BaseContract {
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    parentChainIdEVM(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
