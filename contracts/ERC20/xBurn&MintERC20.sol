@@ -21,7 +21,7 @@ abstract contract XBurnMintERC20 is Context, ERC20, XBurnMintERC20Governance {
 
         setEvmChainId(evmChainId);
 
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _transferOwnership(_msgSender());
     }
 
     /**
