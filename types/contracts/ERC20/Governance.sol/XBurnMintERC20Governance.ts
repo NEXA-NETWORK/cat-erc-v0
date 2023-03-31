@@ -61,7 +61,9 @@ export interface XBurnMintERC20GovernanceInterface extends utils.Interface {
     "evmChainId()": FunctionFragment;
     "finality()": FunctionFragment;
     "isTransferCompleted(bytes32)": FunctionFragment;
+    "nativeAsset()": FunctionFragment;
     "owner()": FunctionFragment;
+    "parentChainIdEVM()": FunctionFragment;
     "registerChain(uint16,bytes32)": FunctionFragment;
     "registerChains(uint16[],bytes32[])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -81,7 +83,9 @@ export interface XBurnMintERC20GovernanceInterface extends utils.Interface {
       | "evmChainId"
       | "finality"
       | "isTransferCompleted"
+      | "nativeAsset"
       | "owner"
+      | "parentChainIdEVM"
       | "registerChain"
       | "registerChains"
       | "renounceOwnership"
@@ -117,7 +121,15 @@ export interface XBurnMintERC20GovernanceInterface extends utils.Interface {
     functionFragment: "isTransferCompleted",
     values: [PromiseOrValue<BytesLike>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "nativeAsset",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "parentChainIdEVM",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "registerChain",
     values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
@@ -167,7 +179,15 @@ export interface XBurnMintERC20GovernanceInterface extends utils.Interface {
     functionFragment: "isTransferCompleted",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "nativeAsset",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "parentChainIdEVM",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "registerChain",
     data: BytesLike
@@ -275,7 +295,11 @@ export interface XBurnMintERC20Governance extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    nativeAsset(overrides?: CallOverrides): Promise<[string]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
+
+    parentChainIdEVM(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
@@ -342,7 +366,11 @@ export interface XBurnMintERC20Governance extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  nativeAsset(overrides?: CallOverrides): Promise<string>;
+
   owner(overrides?: CallOverrides): Promise<string>;
+
+  parentChainIdEVM(overrides?: CallOverrides): Promise<BigNumber>;
 
   registerChain(
     chainId: PromiseOrValue<BigNumberish>,
@@ -409,7 +437,11 @@ export interface XBurnMintERC20Governance extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    nativeAsset(overrides?: CallOverrides): Promise<string>;
+
     owner(overrides?: CallOverrides): Promise<string>;
+
+    parentChainIdEVM(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
@@ -486,7 +518,11 @@ export interface XBurnMintERC20Governance extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    nativeAsset(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    parentChainIdEVM(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
@@ -554,7 +590,11 @@ export interface XBurnMintERC20Governance extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    nativeAsset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    parentChainIdEVM(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
