@@ -41,7 +41,7 @@ contract XBurnMintERC721 is
         setFinality(1);
         setEvmChainId(block.chainid);
         setBaseUri(baseUri);
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _transferOwnership(_msgSender());
     }
 
     function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
@@ -56,7 +56,7 @@ contract XBurnMintERC721 is
 
     function supportsInterface(
         bytes4 interfaceId
-    ) public view override(ERC721, ERC721Enumerable, AccessControl) returns (bool) {
+    ) public view override(ERC721, ERC721Enumerable) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 
