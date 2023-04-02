@@ -76,6 +76,7 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     "isTransferCompleted(bytes32)": FunctionFragment;
     "mint(address)": FunctionFragment;
     "name()": FunctionFragment;
+    "nativeAsset()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "parentChainIdEVM()": FunctionFragment;
@@ -94,9 +95,11 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "unwrap(uint256,address)": FunctionFragment;
     "updateBaseUri(string)": FunctionFragment;
     "updateFinality(uint8)": FunctionFragment;
     "wormhole()": FunctionFragment;
+    "wrap(uint256,address)": FunctionFragment;
   };
 
   getFunction(
@@ -120,6 +123,7 @@ export interface XBurnMintERC721Interface extends utils.Interface {
       | "isTransferCompleted"
       | "mint"
       | "name"
+      | "nativeAsset"
       | "owner"
       | "ownerOf"
       | "parentChainIdEVM"
@@ -138,9 +142,11 @@ export interface XBurnMintERC721Interface extends utils.Interface {
       | "totalSupply"
       | "transferFrom"
       | "transferOwnership"
+      | "unwrap"
       | "updateBaseUri"
       | "updateFinality"
       | "wormhole"
+      | "wrap"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -209,6 +215,10 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "nativeAsset",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
@@ -289,6 +299,10 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "unwrap",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "updateBaseUri",
     values: [PromiseOrValue<string>]
   ): string;
@@ -297,6 +311,10 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(functionFragment: "wormhole", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "wrap",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<string>]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "addressToBytes",
@@ -338,6 +356,10 @@ export interface XBurnMintERC721Interface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "mint", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "nativeAsset",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
@@ -398,6 +420,7 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "unwrap", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "updateBaseUri",
     data: BytesLike
@@ -407,6 +430,7 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "wormhole", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "wrap", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -613,6 +637,8 @@ export interface XBurnMintERC721 extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<[string]>;
 
+    nativeAsset(overrides?: CallOverrides): Promise<[string]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     ownerOf(
@@ -701,6 +727,12 @@ export interface XBurnMintERC721 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    unwrap(
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _recipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     updateBaseUri(
       uri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -712,6 +744,12 @@ export interface XBurnMintERC721 extends BaseContract {
     ): Promise<ContractTransaction>;
 
     wormhole(overrides?: CallOverrides): Promise<[string]>;
+
+    wrap(
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _recipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   addressToBytes(
@@ -795,6 +833,8 @@ export interface XBurnMintERC721 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   name(overrides?: CallOverrides): Promise<string>;
+
+  nativeAsset(overrides?: CallOverrides): Promise<string>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -884,6 +924,12 @@ export interface XBurnMintERC721 extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  unwrap(
+    _tokenId: PromiseOrValue<BigNumberish>,
+    _recipient: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   updateBaseUri(
     uri: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -895,6 +941,12 @@ export interface XBurnMintERC721 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   wormhole(overrides?: CallOverrides): Promise<string>;
+
+  wrap(
+    _tokenId: PromiseOrValue<BigNumberish>,
+    _recipient: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     addressToBytes(
@@ -975,6 +1027,8 @@ export interface XBurnMintERC721 extends BaseContract {
     mint(to: PromiseOrValue<string>, overrides?: CallOverrides): Promise<void>;
 
     name(overrides?: CallOverrides): Promise<string>;
+
+    nativeAsset(overrides?: CallOverrides): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -1062,6 +1116,12 @@ export interface XBurnMintERC721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    unwrap(
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _recipient: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     updateBaseUri(
       uri: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -1073,6 +1133,12 @@ export interface XBurnMintERC721 extends BaseContract {
     ): Promise<void>;
 
     wormhole(overrides?: CallOverrides): Promise<string>;
+
+    wrap(
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _recipient: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {
@@ -1230,6 +1296,8 @@ export interface XBurnMintERC721 extends BaseContract {
 
     name(overrides?: CallOverrides): Promise<BigNumber>;
 
+    nativeAsset(overrides?: CallOverrides): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     ownerOf(
@@ -1318,6 +1386,12 @@ export interface XBurnMintERC721 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    unwrap(
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _recipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     updateBaseUri(
       uri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1329,6 +1403,12 @@ export interface XBurnMintERC721 extends BaseContract {
     ): Promise<BigNumber>;
 
     wormhole(overrides?: CallOverrides): Promise<BigNumber>;
+
+    wrap(
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _recipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -1413,6 +1493,8 @@ export interface XBurnMintERC721 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    nativeAsset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -1502,6 +1584,12 @@ export interface XBurnMintERC721 extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    unwrap(
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _recipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     updateBaseUri(
       uri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -1513,5 +1601,11 @@ export interface XBurnMintERC721 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     wormhole(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    wrap(
+      _tokenId: PromiseOrValue<BigNumberish>,
+      _recipient: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }
