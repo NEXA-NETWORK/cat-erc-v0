@@ -178,6 +178,7 @@ abstract contract XBurnMintERC721 is
     }
 
     function mint(address to) public onlyOwner {
+        require(nativeAsset() == address(0), "Minting not allowed as Native token exists");
         require(block.chainid == parentChainIdEVM(), "Only Minting Allowed on Parent Chain");
         uint256 tokenId = counter();
         incrementCounter();
