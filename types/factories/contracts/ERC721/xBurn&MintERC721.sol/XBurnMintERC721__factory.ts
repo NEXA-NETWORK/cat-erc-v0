@@ -625,6 +625,28 @@ const _abi = [
         name: "tokenContract",
         type: "bytes32",
       },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "custodian",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "validTill",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct XBurnMintERC721Structs.SignatureVerification",
+        name: "signatureArguments",
+        type: "tuple",
+      },
     ],
     name: "registerChain",
     outputs: [],
@@ -642,6 +664,28 @@ const _abi = [
         internalType: "bytes32[]",
         name: "tokenContract",
         type: "bytes32[]",
+      },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "custodian",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "validTill",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct XBurnMintERC721Structs.SignatureVerification",
+        name: "signatureArguments",
+        type: "tuple",
       },
     ],
     name: "registerChains",
@@ -894,6 +938,28 @@ const _abi = [
         name: "uri",
         type: "string",
       },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "custodian",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "validTill",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct XBurnMintERC721Structs.SignatureVerification",
+        name: "signatureArguments",
+        type: "tuple",
+      },
     ],
     name: "updateBaseUri",
     outputs: [],
@@ -906,6 +972,28 @@ const _abi = [
         internalType: "uint8",
         name: "finality",
         type: "uint8",
+      },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "custodian",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "validTill",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct XBurnMintERC721Structs.SignatureVerification",
+        name: "signatureArguments",
+        type: "tuple",
       },
     ],
     name: "updateFinality",

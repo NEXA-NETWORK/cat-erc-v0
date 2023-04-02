@@ -50,6 +50,18 @@ export declare namespace XBurnMintERC20Structs {
     toAddress: string;
     toChain: number;
   };
+
+  export type SignatureVerificationStruct = {
+    custodian: PromiseOrValue<string>;
+    validTill: PromiseOrValue<BigNumberish>;
+    signature: PromiseOrValue<BytesLike>;
+  };
+
+  export type SignatureVerificationStructOutput = [
+    string,
+    BigNumber,
+    string
+  ] & { custodian: string; validTill: BigNumber; signature: string };
 }
 
 export interface XBurnMintERC20Interface extends utils.Interface {
@@ -74,9 +86,9 @@ export interface XBurnMintERC20Interface extends utils.Interface {
     "nativeAsset()": FunctionFragment;
     "owner()": FunctionFragment;
     "parentChainIdEVM()": FunctionFragment;
-    "registerChain(uint16,bytes32)": FunctionFragment;
-    "registerChains(uint16[],bytes32[])": FunctionFragment;
-    "registerNativeToken(address)": FunctionFragment;
+    "registerChain(uint16,bytes32,(address,uint256,bytes))": FunctionFragment;
+    "registerChains(uint16[],bytes32[],(address,uint256,bytes))": FunctionFragment;
+    "registerNativeToken(address,(address,uint256,bytes))": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenContracts(uint16)": FunctionFragment;
@@ -85,7 +97,7 @@ export interface XBurnMintERC20Interface extends utils.Interface {
     "transferFrom(address,address,uint256)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "unwrap(uint256,address)": FunctionFragment;
-    "updateFinality(uint8)": FunctionFragment;
+    "updateFinality(uint8,(address,uint256,bytes))": FunctionFragment;
     "wormhole()": FunctionFragment;
     "wrap(uint256,address)": FunctionFragment;
   };
@@ -200,15 +212,26 @@ export interface XBurnMintERC20Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "registerChain",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      XBurnMintERC20Structs.SignatureVerificationStruct
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "registerChains",
-    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>[]]
+    values: [
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BytesLike>[],
+      XBurnMintERC20Structs.SignatureVerificationStruct
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "registerNativeToken",
-    values: [PromiseOrValue<string>]
+    values: [
+      PromiseOrValue<string>,
+      XBurnMintERC20Structs.SignatureVerificationStruct
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -245,7 +268,10 @@ export interface XBurnMintERC20Interface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "updateFinality",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      XBurnMintERC20Structs.SignatureVerificationStruct
+    ]
   ): string;
   encodeFunctionData(functionFragment: "wormhole", values?: undefined): string;
   encodeFunctionData(
@@ -537,17 +563,20 @@ export interface XBurnMintERC20 extends BaseContract {
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
       tokenContract: PromiseOrValue<BytesLike>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     registerChains(
       chainId: PromiseOrValue<BigNumberish>[],
       tokenContract: PromiseOrValue<BytesLike>[],
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     registerNativeToken(
       _token: PromiseOrValue<string>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -590,6 +619,7 @@ export interface XBurnMintERC20 extends BaseContract {
 
     updateFinality(
       finality: PromiseOrValue<BigNumberish>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -688,17 +718,20 @@ export interface XBurnMintERC20 extends BaseContract {
   registerChain(
     chainId: PromiseOrValue<BigNumberish>,
     tokenContract: PromiseOrValue<BytesLike>,
+    signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   registerChains(
     chainId: PromiseOrValue<BigNumberish>[],
     tokenContract: PromiseOrValue<BytesLike>[],
+    signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   registerNativeToken(
     _token: PromiseOrValue<string>,
+    signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -741,6 +774,7 @@ export interface XBurnMintERC20 extends BaseContract {
 
   updateFinality(
     finality: PromiseOrValue<BigNumberish>,
+    signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -839,17 +873,20 @@ export interface XBurnMintERC20 extends BaseContract {
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
       tokenContract: PromiseOrValue<BytesLike>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     registerChains(
       chainId: PromiseOrValue<BigNumberish>[],
       tokenContract: PromiseOrValue<BytesLike>[],
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     registerNativeToken(
       _token: PromiseOrValue<string>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -890,6 +927,7 @@ export interface XBurnMintERC20 extends BaseContract {
 
     updateFinality(
       finality: PromiseOrValue<BigNumberish>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1050,17 +1088,20 @@ export interface XBurnMintERC20 extends BaseContract {
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
       tokenContract: PromiseOrValue<BytesLike>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     registerChains(
       chainId: PromiseOrValue<BigNumberish>[],
       tokenContract: PromiseOrValue<BytesLike>[],
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     registerNativeToken(
       _token: PromiseOrValue<string>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1103,6 +1144,7 @@ export interface XBurnMintERC20 extends BaseContract {
 
     updateFinality(
       finality: PromiseOrValue<BigNumberish>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1202,17 +1244,20 @@ export interface XBurnMintERC20 extends BaseContract {
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
       tokenContract: PromiseOrValue<BytesLike>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     registerChains(
       chainId: PromiseOrValue<BigNumberish>[],
       tokenContract: PromiseOrValue<BytesLike>[],
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     registerNativeToken(
       _token: PromiseOrValue<string>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1255,6 +1300,7 @@ export interface XBurnMintERC20 extends BaseContract {
 
     updateFinality(
       finality: PromiseOrValue<BigNumberish>,
+      signatureArguments: XBurnMintERC20Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -580,6 +580,28 @@ const _abi = [
         name: "tokenContract",
         type: "bytes32",
       },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "custodian",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "validTill",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct XBurnMintERC20Structs.SignatureVerification",
+        name: "signatureArguments",
+        type: "tuple",
+      },
     ],
     name: "registerChain",
     outputs: [],
@@ -598,6 +620,28 @@ const _abi = [
         name: "tokenContract",
         type: "bytes32[]",
       },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "custodian",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "validTill",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct XBurnMintERC20Structs.SignatureVerification",
+        name: "signatureArguments",
+        type: "tuple",
+      },
     ],
     name: "registerChains",
     outputs: [],
@@ -610,6 +654,28 @@ const _abi = [
         internalType: "address",
         name: "_token",
         type: "address",
+      },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "custodian",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "validTill",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct XBurnMintERC20Structs.SignatureVerification",
+        name: "signatureArguments",
+        type: "tuple",
       },
     ],
     name: "registerNativeToken",
@@ -759,6 +825,28 @@ const _abi = [
         internalType: "uint8",
         name: "finality",
         type: "uint8",
+      },
+      {
+        components: [
+          {
+            internalType: "address",
+            name: "custodian",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "validTill",
+            type: "uint256",
+          },
+          {
+            internalType: "bytes",
+            name: "signature",
+            type: "bytes",
+          },
+        ],
+        internalType: "struct XBurnMintERC20Structs.SignatureVerification",
+        name: "signatureArguments",
+        type: "tuple",
       },
     ],
     name: "updateFinality",

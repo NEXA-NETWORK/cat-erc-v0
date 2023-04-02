@@ -52,6 +52,18 @@ export declare namespace XBurnMintERC721Structs {
     toAddress: string;
     toChain: number;
   };
+
+  export type SignatureVerificationStruct = {
+    custodian: PromiseOrValue<string>;
+    validTill: PromiseOrValue<BigNumberish>;
+    signature: PromiseOrValue<BytesLike>;
+  };
+
+  export type SignatureVerificationStructOutput = [
+    string,
+    BigNumber,
+    string
+  ] & { custodian: string; validTill: BigNumber; signature: string };
 }
 
 export interface XBurnMintERC721GovernanceInterface extends utils.Interface {
@@ -68,13 +80,13 @@ export interface XBurnMintERC721GovernanceInterface extends utils.Interface {
     "isTransferCompleted(bytes32)": FunctionFragment;
     "owner()": FunctionFragment;
     "parentChainIdEVM()": FunctionFragment;
-    "registerChain(uint16,bytes32)": FunctionFragment;
-    "registerChains(uint16[],bytes32[])": FunctionFragment;
+    "registerChain(uint16,bytes32,(address,uint256,bytes))": FunctionFragment;
+    "registerChains(uint16[],bytes32[],(address,uint256,bytes))": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "tokenContracts(uint16)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "updateBaseUri(string)": FunctionFragment;
-    "updateFinality(uint8)": FunctionFragment;
+    "updateBaseUri(string,(address,uint256,bytes))": FunctionFragment;
+    "updateFinality(uint8,(address,uint256,bytes))": FunctionFragment;
     "wormhole()": FunctionFragment;
   };
 
@@ -137,11 +149,19 @@ export interface XBurnMintERC721GovernanceInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "registerChain",
-    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BytesLike>]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      XBurnMintERC721Structs.SignatureVerificationStruct
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "registerChains",
-    values: [PromiseOrValue<BigNumberish>[], PromiseOrValue<BytesLike>[]]
+    values: [
+      PromiseOrValue<BigNumberish>[],
+      PromiseOrValue<BytesLike>[],
+      XBurnMintERC721Structs.SignatureVerificationStruct
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -157,11 +177,17 @@ export interface XBurnMintERC721GovernanceInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "updateBaseUri",
-    values: [PromiseOrValue<string>]
+    values: [
+      PromiseOrValue<string>,
+      XBurnMintERC721Structs.SignatureVerificationStruct
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "updateFinality",
-    values: [PromiseOrValue<BigNumberish>]
+    values: [
+      PromiseOrValue<BigNumberish>,
+      XBurnMintERC721Structs.SignatureVerificationStruct
+    ]
   ): string;
   encodeFunctionData(functionFragment: "wormhole", values?: undefined): string;
 
@@ -317,12 +343,14 @@ export interface XBurnMintERC721Governance extends BaseContract {
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
       tokenContract: PromiseOrValue<BytesLike>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     registerChains(
       chainId: PromiseOrValue<BigNumberish>[],
       tokenContract: PromiseOrValue<BytesLike>[],
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -342,11 +370,13 @@ export interface XBurnMintERC721Governance extends BaseContract {
 
     updateBaseUri(
       uri: PromiseOrValue<string>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     updateFinality(
       finality: PromiseOrValue<BigNumberish>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -395,12 +425,14 @@ export interface XBurnMintERC721Governance extends BaseContract {
   registerChain(
     chainId: PromiseOrValue<BigNumberish>,
     tokenContract: PromiseOrValue<BytesLike>,
+    signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   registerChains(
     chainId: PromiseOrValue<BigNumberish>[],
     tokenContract: PromiseOrValue<BytesLike>[],
+    signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -420,11 +452,13 @@ export interface XBurnMintERC721Governance extends BaseContract {
 
   updateBaseUri(
     uri: PromiseOrValue<string>,
+    signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   updateFinality(
     finality: PromiseOrValue<BigNumberish>,
+    signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -473,12 +507,14 @@ export interface XBurnMintERC721Governance extends BaseContract {
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
       tokenContract: PromiseOrValue<BytesLike>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     registerChains(
       chainId: PromiseOrValue<BigNumberish>[],
       tokenContract: PromiseOrValue<BytesLike>[],
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -496,11 +532,13 @@ export interface XBurnMintERC721Governance extends BaseContract {
 
     updateBaseUri(
       uri: PromiseOrValue<string>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     updateFinality(
       finality: PromiseOrValue<BigNumberish>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -561,12 +599,14 @@ export interface XBurnMintERC721Governance extends BaseContract {
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
       tokenContract: PromiseOrValue<BytesLike>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     registerChains(
       chainId: PromiseOrValue<BigNumberish>[],
       tokenContract: PromiseOrValue<BytesLike>[],
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -586,11 +626,13 @@ export interface XBurnMintERC721Governance extends BaseContract {
 
     updateBaseUri(
       uri: PromiseOrValue<string>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     updateFinality(
       finality: PromiseOrValue<BigNumberish>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -640,12 +682,14 @@ export interface XBurnMintERC721Governance extends BaseContract {
     registerChain(
       chainId: PromiseOrValue<BigNumberish>,
       tokenContract: PromiseOrValue<BytesLike>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     registerChains(
       chainId: PromiseOrValue<BigNumberish>[],
       tokenContract: PromiseOrValue<BytesLike>[],
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -665,11 +709,13 @@ export interface XBurnMintERC721Governance extends BaseContract {
 
     updateBaseUri(
       uri: PromiseOrValue<string>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     updateFinality(
       finality: PromiseOrValue<BigNumberish>,
+      signatureArguments: XBurnMintERC721Structs.SignatureVerificationStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
