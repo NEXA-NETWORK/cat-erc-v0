@@ -2,6 +2,7 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
@@ -19,6 +20,7 @@ import "./Governance.sol";
 abstract contract XBurnMintERC721 is
     Context,
     ERC721,
+    IERC721Receiver,
     ERC721Burnable,
     ERC721URIStorage,
     ERC721Enumerable,
@@ -69,6 +71,15 @@ abstract contract XBurnMintERC721 is
         uint256 batchSize
     ) internal override(ERC721, ERC721Enumerable) {
         super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
+    }
+
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 tokenId,
+        bytes calldata data
+    ) public pure override returns (bytes4) {
+        return this.onERC721Received.selector;
     }
 
     function bridgeOut(

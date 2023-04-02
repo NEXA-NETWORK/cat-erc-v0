@@ -77,6 +77,7 @@ export interface XBurnMintERC721Interface extends utils.Interface {
     "mint(address)": FunctionFragment;
     "name()": FunctionFragment;
     "nativeAsset()": FunctionFragment;
+    "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
     "parentChainIdEVM()": FunctionFragment;
@@ -124,6 +125,7 @@ export interface XBurnMintERC721Interface extends utils.Interface {
       | "mint"
       | "name"
       | "nativeAsset"
+      | "onERC721Received"
       | "owner"
       | "ownerOf"
       | "parentChainIdEVM"
@@ -218,6 +220,15 @@ export interface XBurnMintERC721Interface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "nativeAsset",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "onERC721Received",
+    values: [
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>
+    ]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -358,6 +369,10 @@ export interface XBurnMintERC721Interface extends utils.Interface {
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "nativeAsset",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "onERC721Received",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -639,6 +654,14 @@ export interface XBurnMintERC721 extends BaseContract {
 
     nativeAsset(overrides?: CallOverrides): Promise<[string]>;
 
+    onERC721Received(
+      operator: PromiseOrValue<string>,
+      from: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     ownerOf(
@@ -836,6 +859,14 @@ export interface XBurnMintERC721 extends BaseContract {
 
   nativeAsset(overrides?: CallOverrides): Promise<string>;
 
+  onERC721Received(
+    operator: PromiseOrValue<string>,
+    from: PromiseOrValue<string>,
+    tokenId: PromiseOrValue<BigNumberish>,
+    data: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   ownerOf(
@@ -1029,6 +1060,14 @@ export interface XBurnMintERC721 extends BaseContract {
     name(overrides?: CallOverrides): Promise<string>;
 
     nativeAsset(overrides?: CallOverrides): Promise<string>;
+
+    onERC721Received(
+      operator: PromiseOrValue<string>,
+      from: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -1298,6 +1337,14 @@ export interface XBurnMintERC721 extends BaseContract {
 
     nativeAsset(overrides?: CallOverrides): Promise<BigNumber>;
 
+    onERC721Received(
+      operator: PromiseOrValue<string>,
+      from: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     ownerOf(
@@ -1495,6 +1542,14 @@ export interface XBurnMintERC721 extends BaseContract {
     name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     nativeAsset(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    onERC721Received(
+      operator: PromiseOrValue<string>,
+      from: PromiseOrValue<string>,
+      tokenId: PromiseOrValue<BigNumberish>,
+      data: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
