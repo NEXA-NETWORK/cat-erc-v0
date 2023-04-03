@@ -62,5 +62,7 @@ export type { XBurnMintERC721Events } from "./contracts/ERC721/State.sol/XBurnMi
 export { XBurnMintERC721Events__factory } from "./factories/contracts/ERC721/State.sol/XBurnMintERC721Events__factory";
 export type { XBurnMintERC721 } from "./contracts/ERC721/xBurn&MintERC721.sol/XBurnMintERC721";
 export { XBurnMintERC721__factory } from "./factories/contracts/ERC721/xBurn&MintERC721.sol/XBurnMintERC721__factory";
+export type { IERC721Extended } from "./contracts/interfaces/IERC721Extended";
+export { IERC721Extended__factory } from "./factories/contracts/interfaces/IERC721Extended__factory";
 export type { IWormhole } from "./contracts/interfaces/IWormhole";
 export { IWormhole__factory } from "./factories/contracts/interfaces/IWormhole__factory";

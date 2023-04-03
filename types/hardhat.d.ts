@@ -125,6 +125,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.XBurnMintERC721__factory>;
     getContractFactory(
+      name: "IERC721Extended",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC721Extended__factory>;
+    getContractFactory(
       name: "IWormhole",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IWormhole__factory>;
@@ -269,6 +273,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.XBurnMintERC721>;
+    getContractAt(
+      name: "IERC721Extended",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721Extended>;
     getContractAt(
       name: "IWormhole",
       address: string,
