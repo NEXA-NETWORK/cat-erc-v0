@@ -16,38 +16,37 @@ import "../interfaces/IWormhole.sol";
 contract XBurnMintERC20Governance is XBurnMintERC20Getters, XBurnMintERC20Setters, Ownable {
     using BytesLib for bytes;
 
-    /**
-     * @dev verifySignature serves to verify a signature for owner verification purposes.
-     * - it computes the keccak256 hash of data passed by the client
-     * - it recovers the authority key from the hashed data and signature
-     */
+    /// builds a prefixed hash to mimic the behavior of eth_sign.
+    function prefixed(bytes32 _hash) internal pure returns (bytes32) {
+        return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", _hash));
+    }
+
+    /// signature methods.
+    function splitSignature(
+        bytes memory sig
+    ) internal pure returns (uint8 v, bytes32 r, bytes32 s) {
+        require(sig.length == 65);
+
+        assembly {
+            // first 32 bytes, after the length prefix.
+            r := mload(add(sig, 32))
+            // second 32 bytes.
+            s := mload(add(sig, 64))
+            // final byte (first byte of the next 32 bytes).
+            v := byte(0, mload(add(sig, 96)))
+        }
+
+        return (v, r, s);
+    }
+
     function verifySignature(
-        bytes memory encodedHashData,
-        bytes memory sig,
+        bytes32 message,
+        bytes memory signature,
         address authority
     ) internal pure returns (bool) {
-        require(sig.length == 65, "incorrect signature length");
-        require(encodedHashData.length > 0, "no hash data");
-
-        /// compute hash from encoded data
-        bytes32 hash_ = keccak256(encodedHashData);
-
-        /// parse v, r, s
-        uint8 index = 0;
-
-        bytes32 r = sig.toBytes32(index);
-        index += 32;
-
-        bytes32 s = sig.toBytes32(index);
-        index += 32;
-
-        uint8 v = sig.toUint8(index) + 27;
-
-        /// recovered key
-        address key = ecrecover(hash_, v, r, s);
-
-        /// confirm that the recovered key is the authority
-        if (key == authority) {
+        (uint8 v, bytes32 r, bytes32 s) = splitSignature(signature);
+        address recovered = ecrecover(message, v, r, s);
+        if (recovered == authority) {
             return true;
         } else {
             return false;
@@ -61,9 +60,10 @@ contract XBurnMintERC20Governance is XBurnMintERC20Getters, XBurnMintERC20Setter
         if (msg.sender == owner()) {
             _;
         } else {
-            bytes memory encodedHashData = abi.encodePacked(
-                signatureArguments.custodian,
-                signatureArguments.validTill
+            bytes32 encodedHashData = prefixed(
+                keccak256(
+                    abi.encodePacked(signatureArguments.custodian, signatureArguments.validTill)
+                )
             );
             require(signatureArguments.custodian == msg.sender, "custodian can call only");
             require(signatureArguments.validTill > block.timestamp, "signed transaction expired");
