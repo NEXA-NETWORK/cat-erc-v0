@@ -102,11 +102,4 @@ contract CATERC721Governance is CATERC721Getters, CATERC721Setters, Ownable {
     ) public onlyOwnerOrOwnerSignature(signatureArguments) {
         setFinality(finality);
     }
-
-    function updateBaseUri(
-        string memory uri,
-        CATERC721Structs.SignatureVerification memory signatureArguments
-    ) public onlyOwnerOrOwnerSignature(signatureArguments) {
-        setBaseUri(uri);
-    }
 }
