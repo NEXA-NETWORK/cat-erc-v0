@@ -17,20 +17,12 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events {
         setEvmChainId(block.chainid);
     }
 
-    function initialize(
-        uint256 parentChainIdEVM,
-        uint16 chainId,
-        address nativeToken,
-        address wormhole,
-        uint8 finality
-    ) public onlyOwner {
+    function initialize(uint16 chainId, address wormhole, uint8 finality) public onlyOwner {
         require(isInitialized() == false, "Already Initialized");
 
         setChainId(chainId);
         setWormhole(wormhole);
         setFinality(finality);
-        setParentChainIdEVM(parentChainIdEVM);
-        setNativeAsset(nativeToken);
 
         setIsInitialized();
     }
@@ -110,28 +102,5 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events {
         emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress);
 
         return vm.payload;
-    }
-
-    function wrap(uint256 _amount, address _recipient) public {
-        require(isInitialized() == true, "Not Initialized");
-
-        require(nativeAsset() != address(0), "native token not set");
-        require(block.chainid == parentChainIdEVM(), "only parent chain wrapping allowed");
-        IERC20 token = IERC20(nativeAsset());
-
-        require(token.allowance(msg.sender, address(this)) >= _amount, "not enough allowance");
-        require(token.balanceOf(msg.sender) >= _amount, "low balance");
-
-        token.transferFrom(msg.sender, address(this), _amount);
-        _mint(_recipient, _amount);
-    }
-
-    function unwrap(uint256 _amount, address _recipient) public {
-        require(isInitialized() == true, "Not Initialized");
-
-        IERC20 token = IERC20(nativeAsset());
-
-        _burn(msg.sender, _amount);
-        token.transfer(_recipient, _amount);
     }
 }

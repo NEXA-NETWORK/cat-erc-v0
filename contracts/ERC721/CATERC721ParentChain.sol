@@ -61,7 +61,8 @@ contract CATERC721ParentChain is Context, IERC721Receiver, CATERC721Governance, 
             "Recipient Bridge Contract not configured for given chain id"
         );
 
-        nativeAsset().safeTransferFrom(_msgSender(), address(this), tokenId); //Transfer in contract and lock the nft in this contract
+        // Transfer in contract and lock the nft in this contract
+        nativeAsset().safeTransferFrom(_msgSender(), address(this), tokenId);
 
         uint16 tokenChain = chainId();
         bytes32 tokenAddress = addressToBytes(address(this));
@@ -109,7 +110,7 @@ contract CATERC721ParentChain is Context, IERC721Receiver, CATERC721Governance, 
 
         address transferRecipient = bytesToAddress(transfer.toAddress);
 
-        // unlock the nft in this contract and Transfer out from contract to user
+        // Unlock the nft in this contract and Transfer out from contract to user
         nativeAsset().safeTransferFrom(address(this), transferRecipient, transfer.tokenID);
 
         emit bridgeInEvent(
