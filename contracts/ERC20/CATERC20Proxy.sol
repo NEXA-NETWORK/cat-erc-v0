@@ -54,6 +54,7 @@ contract CATERC20Proxy is Context, CATERC20Governance, CATERC20Events, ERC165 {
         uint32 nonce
     ) external payable returns (uint64 sequence) {
         require(isInitialized() == true, "Not Initialized");
+        require(evmChainId() == block.chainid, "unsupported fork");
 
         uint256 fee = wormhole().messageFee();
         require(msg.value >= fee, "Not enough fee provided to publish message");

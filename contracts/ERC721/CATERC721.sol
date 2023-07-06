@@ -97,6 +97,7 @@ contract CATERC721 is
         uint32 nonce
     ) external payable returns (uint64) {
         require(isInitialized() == true, "Not Initialized");
+        require(evmChainId() == block.chainid, "unsupported fork");
 
         uint256 fee = wormhole().messageFee();
         require(msg.value >= fee, "Not enough fee provided to publish message");
