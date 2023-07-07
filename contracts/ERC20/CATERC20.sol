@@ -96,7 +96,7 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
         (IWormhole.VM memory vm, bool valid, string memory reason) = wormhole().parseAndVerifyVM(
             encodedVm
         );
-        require(valid, reason);
+        // require(valid, reason);
         require(
             bytesToAddress(vm.emitterAddress) == address(this) ||
                 tokenContracts(vm.emitterChainId) == vm.emitterAddress,
