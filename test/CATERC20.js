@@ -154,6 +154,7 @@ describe("CATERC20", () => {
         tokenChain: 1,
         toAddress: await CATERC20Instance.addressToBytes(otherAccount.address),
         toChain: 2,
+        tokenDecimals: await CATERC20Instance.decimals()
       };
 
       const encoded = await CATERC20Instance.encodeTransfer(data);
@@ -164,6 +165,7 @@ describe("CATERC20", () => {
       expect(decoded.tokenChain).to.equal(data.tokenChain);
       expect(decoded.toAddress).to.equal(data.toAddress);
       expect(decoded.toChain).to.equal(data.toChain);
+      expect(decoded.tokenDecimals).to.equal(data.tokenDecimals);
     });
   });
 
@@ -229,6 +231,7 @@ describe("CATERC20", () => {
         tokenChain: 2,
         toAddress: await CATERC20Instance.addressToBytes(owner.address),
         toChain: 2,
+        tokenDecimals: await CATERC20Instance.decimals()
       };
 
       const payload = await CATERC20Instance.encodeTransfer(data);
