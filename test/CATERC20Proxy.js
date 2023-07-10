@@ -233,7 +233,10 @@ describe("CATERC20Proxy", () => {
 
       await TestTokenInstance.mint(amountToMint);
       await TestTokenInstance.transfer(CATERC20ProxyInstance.address, amountToMint);
+
+      console.log("Balance Before", await TestTokenInstance.balanceOf(owner.address))
       await CATERC20ProxyInstance.bridgeIn("0x" + vaa);
+      console.log("Balance Before", await TestTokenInstance.balanceOf(owner.address))
     });
   });
 });
