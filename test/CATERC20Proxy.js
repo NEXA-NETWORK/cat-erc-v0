@@ -152,7 +152,7 @@ describe("CATERC20Proxy", () => {
         tokenChain: 1,
         toAddress: await CATERC20ProxyInstance.addressToBytes(otherAccount.address),
         toChain: 2,
-        tokenDecimals: await CATERC20ProxyInstance.getDecimals()
+        tokenDecimals: await TestTokenInstance.decimals()
       };
 
       const encoded = await CATERC20ProxyInstance.encodeTransfer(data);
@@ -214,7 +214,7 @@ describe("CATERC20Proxy", () => {
         tokenChain: 2,
         toAddress: await CATERC20ProxyInstance.addressToBytes(owner.address),
         toChain: 2,
-        tokenDecimals: await CATERC20ProxyInstance.getDecimals()
+        tokenDecimals: await TestTokenInstance.decimals()
       };
 
       const payload = await CATERC20ProxyInstance.encodeTransfer(data);
