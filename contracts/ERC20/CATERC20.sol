@@ -86,7 +86,8 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
             tokenChain,
             recipientChain,
             addressToBytes(_msgSender()),
-            recipient
+            recipient,
+            getDecimals()
         );
     } // end of function
 
@@ -98,13 +99,16 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
             encodedVm
         );
         require(valid, reason);
+        // Need to change this for solana.
         require(
             bytesToAddress(vm.emitterAddress) == address(this) ||
                 tokenContracts(vm.emitterChainId) == vm.emitterAddress,
             "Invalid Emitter"
         );
 
-        CATERC20Structs.CrossChainPayload memory transfer = decodeTransfer(vm.payload);
+        CATERC20Structs.CrossChainPayload memory transfer = decodeTransferSolana(vm.payload);
+
+        
         address transferRecipient = bytesToAddress(transfer.toAddress);
 
         require(!isTransferCompleted(vm.hash), "transfer already completed");
@@ -115,12 +119,12 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
         uint256 nativeAmount = normalizeAmount(
             transfer.amount,
             transfer.tokenDecimals,
-            getDecimals()
+            transfer.tokenDecimals
         );
 
         _mint(transferRecipient, nativeAmount);
 
-        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress);
+        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress, transfer.tokenDecimals);
 
         return vm.payload;
     }

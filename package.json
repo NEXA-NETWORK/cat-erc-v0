@@ -6,6 +6,7 @@
   "scripts": {
     "compile": "npx hardhat compile",
     "test": "npx hardhat test --network hardhat",
+    "test20": "npx hardhat --network evm test test/CATERC20.js ",
     "solhint": "npx solhint -f table contracts/**/*.sol",
     "prettier:solidity": "npx prettier --write contracts/**/*.sol",
     "deploy-ERC721": "npx hardhat run ./scripts/deployERC721.ts --network",

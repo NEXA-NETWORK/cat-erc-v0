@@ -91,7 +91,8 @@ contract CATERC20Proxy is Context, CATERC20Governance, CATERC20Events, ERC165 {
             tokenChain,
             recipientChain,
             addressToBytes(_msgSender()),
-            recipient
+            recipient,
+            getDecimals()
         );
     } // end of function
 
@@ -126,7 +127,7 @@ contract CATERC20Proxy is Context, CATERC20Governance, CATERC20Events, ERC165 {
         // Unlock the tokens in this contract and Transfer out from contract to user
         SafeERC20.safeTransfer(nativeAsset(), transferRecipient, nativeAmount);
 
-        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress);
+        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress, transfer.tokenDecimals);
 
         return vm.payload;
     }
