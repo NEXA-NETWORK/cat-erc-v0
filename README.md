@@ -4,7 +4,7 @@ Cross Chain Burn and Mint for ERC721 and ERC20 tokens
 ## Instruction to run the tests.
 To run the contracts locally. we will use Wormhole Devnet called tilt.
 ```bash
-git clone https://github.com/barnjamin/wormhole-local-validator
+git clone https://github.com/hmzakhalid/wormhole-local-validator
 cd wormhole-local-validator
 npm install
 npm run evm 

@@ -89,6 +89,18 @@ contract CATERC20Getters is CATERC20State {
         return bytes32(uint256(uint160(a)));
     }
 
+    function solanaAddressToBytes(bytes32 solAddress) public pure returns (bytes32) {
+        return solAddress;
+    }
+
+    function bytesToSolanaAddress(bytes32 b) public pure returns (bytes32) {
+        bytes memory bytesArray = new bytes(32);
+        for (uint256 i = 0; i < 32; i++) {
+            bytesArray[i] = b[i];
+        }
+        return bytes32(bytesArray);
+    }
+
     function encodeTransfer(
         CATERC20Structs.CrossChainPayload memory transfer
     ) public pure returns (bytes memory encoded) {
@@ -135,7 +147,6 @@ contract CATERC20Getters is CATERC20State {
         }
         return result;
     }
-
 
     function bigToLittleEndian16(bytes memory _bytes) internal pure returns (uint16) {
         require(_bytes.length == 2, "bytes length should be 2");
