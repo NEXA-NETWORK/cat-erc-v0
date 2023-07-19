@@ -1,5 +1,5 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-const { ethers, upgrades } = require("hardhat");
+// const { ethers, upgrades } = require("hardhat");
 const { expect } = require("chai");
 const elliptic = require("elliptic");
 const { ZERO_BYTES32, ZERO_ADDRESS } = require("@openzeppelin/test-helpers/src/constants");
@@ -10,12 +10,13 @@ const {
   parseSequenceFromLogEth,
 } = require("@certusone/wormhole-sdk");
 
+
 const testSigner1PK = "cfb12303a19cde580bb4dd771639b0d26bc68353645571a8cff516ab2ee113a0";
 
 const name = "CATERC20Test";
 const symbol = "CATTEST";
-const decimals = 9;
-const maxSupply = "1000000000000000000000";
+const decimals = 18;
+const maxSupply = "10000000000000000000";
 
 const wormholeChainId = "2";
 const wormholeCoreContract = "0xC89Ce4735882C9F0f0FE26686c53074E09B0D550";
@@ -234,7 +235,7 @@ describe("CATERC20", () => {
 
       const SPLTokenAddress = await CATERC20Instance.connect(otherAccount).solanaAddressToBytes(decoded_token);
       console.log("SPL Token Address:", SPLTokenAddress);
-      
+
       // const revTx = await CATERC20Instance.connect(otherAccount).bytesToSolanaAddress(SPLTokenAddress);
       // console.log(revTx);
       // const originalAddress = bs58.encode(Buffer.from(revTx.slice(2), 'hex'));
@@ -246,7 +247,7 @@ describe("CATERC20", () => {
         SignatureVerification
       ).then(tx => tx.wait());
 
-      const amountToMint = "4294967295";
+      const amountToMint = "5124095576375277";
       const ReceipientAddress = bs58.decode(SOLANA_RECEIPIENT_ADDRESS);
       const nonce = 0;
 
@@ -268,7 +269,7 @@ describe("CATERC20", () => {
 
       console.log(
         "Searching for: ",
-        `${restAddress}/v1/signed_vaa/${wormholeChainId}/${emitterAddr}/${seq}`
+        `http://localhost:7071/v1/signed_vaa/${wormholeChainId}/${emitterAddr}/${seq}`
       );
 
       expect(await CATERC20Instance.mintedSupply()).to.be.equal(amountToMint);
@@ -279,9 +280,23 @@ describe("CATERC20", () => {
 
     it("solana bridgeIn", async () => {
       const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
+      
+      const { custodian, validTill, signature } = await makeSignature(
+        otherAccount.address,
+        validTime,
+        owner
+      );
+      const SignatureVerification = [custodian, validTill, signature];
+      const SPLTokenAddress = Buffer.from("04a97fa4da1675cf1a83750edcc176e956fe37fc0ffd8db87eeff6cc78ebd51b", "hex");
 
-      // VAA generated from Solana 
-      const vaa = Buffer.from("AQAAAAABAAgM5FR1owkWIPXomuugyIyge67qPS0ijBLzIHNzeJu8dNX7VNhhld13JDX5ozBPGkHSy/PU7bYLRlRnxmC9fh0AZK6SYQAAAAAAAQSpf6TaFnXPGoN1DtzBdulW/jf8D/2NuH7v9sx469UbAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/////OnfHk6JgIlJBinJY+zVYTx/yLXRjFoIwoho8hzYDk6gEAAAAAAAAAAAAAAAAAkPi/akefMg6tB0QRpLDnlE6oycECAAk=", "base64");
+      await CATERC20Instance.registerChain(
+        SOLANA_CHAIN_ID,
+        SPLTokenAddress,
+        SignatureVerification
+      ).then(tx => tx.wait());
+
+      
+      const vaa = Buffer.from("AQAAAAABAGaX8wXm1qaFkVd+c8zEHmtuHMe39bvMUexEoui+L22BRIG+asxZCpAHENXJZJUWDLrhJ/CgoLp7YK5KcwH2o10BZLewfgAAAAAAAQSpf6TaFnXPGoN1DtzBdulW/jf8D/2NuH7v9sx469UbAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARWORgkT0AADOnfHk6JgIlJBinJY+zVYTx/yLXRjFoIwoho8hzYDk6gEAAAAAAAAAAAAAAAAAkPi/akefMg6tB0QRpLDnlE6oycECAAk=", "base64");
       console.log("VAA: ", vaa);
       // Balance will be a BigNumber
       let balance = await CATERC20Instance.balanceOf(owner.address);
@@ -337,33 +352,33 @@ describe("CATERC20", () => {
       const amountToMint = "100000000000";
       const foreignDecimals = 9;
 
-      const data = {
-        amount: amountToMint,
-        tokenAddress: await CATERC20Instance.addressToBytes(CATERC20Instance.address),
-        tokenChain: 2,
-        toAddress: await CATERC20Instance.addressToBytes(owner.address),
-        toChain: 2,
-        tokenDecimals: foreignDecimals
-      };
+    const data = {
+      amount: amountToMint,
+      tokenAddress: await CATERC20Instance.addressToBytes(CATERC20Instance.address),
+      tokenChain: 2,
+      toAddress: await CATERC20Instance.addressToBytes(owner.address),
+      toChain: 2,
+      tokenDecimals: foreignDecimals
+    };
 
-      const payload = await CATERC20Instance.encodeTransfer(data);
-      const vaa = await signAndEncodeVM(
-        1,
-        1,
-        wormholeChainId,
-        await CATERC20Instance.addressToBytes(CATERC20Instance.address),
-        0,
-        payload,
-        [testSigner1PK],
-        0,
-        finality
-      );
-
-      let balance = await CATERC20Instance.balanceOf(owner.address);
-      console.log("Balance Before", balance.toString())
-      await CATERC20Instance.bridgeIn(vaa).then(tx => tx.wait());
-      balance = await CATERC20Instance.balanceOf(owner.address);
-      console.log("Balance After", balance.toString())
+    const payload = await CATERC20Instance.encodeTransfer(data);
+    const vaa = await signAndEncodeVM(
+      1,
+      1,
+      1,
+      await CATERC20Instance.addressToBytes(CATERC20Instance.address),
+      0,
+      payload,
+      [testSigner1PK],
+      0,
+      finality
+    );
+      console.log("VAA: ", vaa);
+    let balance = await CATERC20Instance.balanceOf(owner.address);
+    console.log("Balance Before", balance.toString())
+    await CATERC20Instance.bridgeIn(vaa).then(tx => tx.wait());
+    balance = await CATERC20Instance.balanceOf(owner.address);
+    console.log("Balance After", balance.toString())
     });
   });
 });

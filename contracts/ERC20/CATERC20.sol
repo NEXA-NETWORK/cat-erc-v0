@@ -27,6 +27,8 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
         uint256 maxSupply
     ) public onlyOwner {
         require(isInitialized() == false, "Already Initialized");
+        require(maxSupply <= type(uint64).max, "Max supply can't exceed maximum u64 value");
+        require(chainId != 0, "Invalid chainId");
 
         setChainId(chainId);
         setWormhole(wormhole);
@@ -58,6 +60,7 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
         require(isInitialized() == true, "Not Initialized");
         require(evmChainId() == block.chainid, "unsupported fork");
         require(tokenContracts(recipientChain) != bytes32(0), "recipient chain not configured");
+        require(amount <= type(uint64).max, "Amount exceeds u64");
 
         uint256 fee = wormhole().messageFee();
         require(msg.value >= fee, "Not enough fee provided to publish message");
@@ -99,16 +102,19 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
             encodedVm
         );
         require(valid, reason);
-        // Need to change this for solana.
         require(
-            bytesToAddress(vm.emitterAddress) == address(this) ||
-                tokenContracts(vm.emitterChainId) == vm.emitterAddress,
+            tokenContracts(vm.emitterChainId) == vm.emitterAddress ||
+                bytesToAddress(vm.emitterAddress) == address(this),
             "Invalid Emitter"
         );
 
-        CATERC20Structs.CrossChainPayload memory transfer = decodeTransferSolana(vm.payload);
+        CATERC20Structs.CrossChainPayload memory transfer;
+        if (vm.emitterChainId == 1) {
+            transfer = decodeTransferSolana(vm.payload);
+        } else {
+            transfer = decodeTransfer(vm.payload);
+        }
 
-        
         address transferRecipient = bytesToAddress(transfer.toAddress);
 
         require(!isTransferCompleted(vm.hash), "transfer already completed");
@@ -119,12 +125,18 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
         uint256 nativeAmount = normalizeAmount(
             transfer.amount,
             transfer.tokenDecimals,
-            transfer.tokenDecimals
+            getDecimals()
         );
 
         _mint(transferRecipient, nativeAmount);
 
-        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress, transfer.tokenDecimals);
+        emit bridgeInEvent(
+            nativeAmount,
+            transfer.tokenChain,
+            transfer.toChain,
+            transfer.toAddress,
+            transfer.tokenDecimals
+        );
 
         return vm.payload;
     }
