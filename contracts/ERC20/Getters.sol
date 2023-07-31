@@ -89,18 +89,6 @@ contract CATERC20Getters is CATERC20State {
         return bytes32(uint256(uint160(a)));
     }
 
-    function solanaAddressToBytes(bytes32 solAddress) public pure returns (bytes32) {
-        return solAddress;
-    }
-
-    function bytesToSolanaAddress(bytes32 b) public pure returns (bytes32) {
-        bytes memory bytesArray = new bytes(32);
-        for (uint256 i = 0; i < 32; i++) {
-            bytesArray[i] = b[i];
-        }
-        return bytes32(bytesArray);
-    }
-
     function encodeTransfer(
         CATERC20Structs.CrossChainPayload memory transfer
     ) public pure returns (bytes memory encoded) {
@@ -132,41 +120,6 @@ contract CATERC20Getters is CATERC20State {
         index += 32;
 
         transfer.toChain = encoded.toUint16(index);
-        index += 2;
-
-        transfer.tokenDecimals = encoded.toUint8(index);
-        index += 1;
-
-        require(encoded.length == index, "invalid Transfer");
-    }
-
-    function bigToLittleEndian16(bytes memory _bytes) internal pure returns (uint16) {
-        require(_bytes.length == 2, "bytes length should be 2");
-        uint16 number;
-        for (uint i = 0; i < 2; i++) {
-            number = uint16((number << 8) | uint8(_bytes[1 - i]));
-        }
-        return number;
-    }
-
-    function decodeTransferSolana(
-        bytes memory encoded
-    ) public pure returns (CATERC20Structs.CrossChainPayload memory transfer) {
-        uint index = 0;
-
-        transfer.amount = encoded.toUint256(index);
-        index += 32;
-
-        transfer.tokenAddress = encoded.toBytes32(index);
-        index += 32;
-
-        transfer.tokenChain = bigToLittleEndian16(encoded.slice(index, 2));
-        index += 2;
-
-        transfer.toAddress = encoded.toBytes32(index);
-        index += 32;
-
-        transfer.toChain = bigToLittleEndian16(encoded.slice(index, 2));
         index += 2;
 
         transfer.tokenDecimals = encoded.toUint8(index);

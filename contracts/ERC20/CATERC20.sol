@@ -108,12 +108,7 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
             "Invalid Emitter"
         );
 
-        CATERC20Structs.CrossChainPayload memory transfer;
-        if (vm.emitterChainId == 1) {
-            transfer = decodeTransferSolana(vm.payload);
-        } else {
-            transfer = decodeTransfer(vm.payload);
-        }
+        CATERC20Structs.CrossChainPayload memory transfer  = decodeTransfer(vm.payload);
 
         address transferRecipient = bytesToAddress(transfer.toAddress);
 

@@ -8,6 +8,7 @@ const bs58 = require('bs58')
 const {
   getEmitterAddressEth,
   parseSequenceFromLogEth,
+  getEmitterAddressSolana,
 } = require("@certusone/wormhole-sdk");
 
 
@@ -25,7 +26,7 @@ const nowTime = parseInt(Math.floor(new Date().getTime() / 1000));
 const validTime = nowTime + 300;
 
 const SOLANA_CHAIN_ID = 1;
-const SPL_MINT_TOKEN = "6YkWjBJLw7ke7vUqgxs5MELiDPyu41fNBQomGoVCP9B3";
+const SPL_CONTRACT_ADDRESS = "9oMo3tUy3gBYi9FHEDF8YFQBryiUXLqq8wi4Ztsd186Y";
 const SOLANA_RECEIPIENT_ADDRESS = "ACSSLiq7TxQPr4wPN77JUyfV7m1DHCiR81rZ6TphBXUK";
 
 describe("CATERC20", () => {
@@ -231,19 +232,11 @@ describe("CATERC20", () => {
         owner
       );
       const SignatureVerification = [custodian, validTill, signature];
-      const decoded_token = bs58.decode(SPL_MINT_TOKEN)
-
-      const SPLTokenAddress = await CATERC20Instance.connect(otherAccount).solanaAddressToBytes(decoded_token);
-      console.log("SPL Token Address:", SPLTokenAddress);
-
-      // const revTx = await CATERC20Instance.connect(otherAccount).bytesToSolanaAddress(SPLTokenAddress);
-      // console.log(revTx);
-      // const originalAddress = bs58.encode(Buffer.from(revTx.slice(2), 'hex'));
-      // console.log(originalAddress);
+      const emitterAddress = bs58.decode(getEmitterAddressSolana(SPL_CONTRACT_ADDRESS));
 
       await CATERC20Instance.connect(otherAccount).registerChain(
         SOLANA_CHAIN_ID,
-        SPLTokenAddress,
+        emitterAddress,
         SignatureVerification
       ).then(tx => tx.wait());
 
@@ -258,8 +251,7 @@ describe("CATERC20", () => {
         ReceipientAddress,
         nonce
       ).then(tx => tx.wait());
-      // await tx.wait();
-      // console.log(tx);
+
       const emitterAddr = getEmitterAddressEth(CATERC20Instance.address);
       const seq = parseSequenceFromLogEth(tx, wormholeCoreContract);
       console.log("Sequece Number: ", seq);
@@ -269,7 +261,7 @@ describe("CATERC20", () => {
 
       console.log(
         "Searching for: ",
-        `http://localhost:7071/v1/signed_vaa/${wormholeChainId}/${emitterAddr}/${seq}`
+        `${restAddress}/v1/signed_vaa/${wormholeChainId}/${emitterAddr}/${seq}`
       );
 
       expect(await CATERC20Instance.mintedSupply()).to.be.equal(amountToMint);
