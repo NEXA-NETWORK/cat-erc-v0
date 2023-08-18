@@ -11,12 +11,14 @@ const name = "CATERC721Test";
 const symbol = "CATTEST";
 const maxSupply = 100;
 const baseUri = "https://boredapeyachtclub.com/api/mutants/";
+const baseUriSolana = "https://explorer.solana.com/address/5oKTQ2SPVgWEhDHFGWQHTqejGcXqvh5exwxmEJprZedH/metadata";
 
 const wormholeChainId = "2";
-const wormholeCoreContract = "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B";
+const wormholeCoreContract = "0xC89Ce4735882C9F0f0FE26686c53074E09B0D550";
 const finality = 1;
 const nowTime = parseInt(Math.floor(new Date().getTime() / 1000));
 const validTime = nowTime + 300;
+
 
 describe("CATERC721", () => {
   async function deployFixture() {

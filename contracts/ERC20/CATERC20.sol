@@ -66,11 +66,12 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
         require(msg.value >= fee, "Not enough fee provided to publish message");
         uint16 tokenChain = wormhole().chainId();
         bytes32 tokenAddress = bytes32(uint256(uint160(address(this))));
-
+        
         _burn(_msgSender(), amount);
 
+        uint256 foreignAmount = normalizeAmount(amount, getDecimals());
         CATERC20Structs.CrossChainPayload memory transfer = CATERC20Structs.CrossChainPayload({
-            amount: amount,
+            amount: foreignAmount,
             tokenAddress: tokenAddress,
             tokenChain: tokenChain,
             toAddress: recipient,
@@ -85,7 +86,7 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
         );
 
         emit bridgeOutEvent(
-            amount,
+            foreignAmount,
             tokenChain,
             recipientChain,
             addressToBytes(_msgSender()),
@@ -117,9 +118,8 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
 
         require(transfer.toChain == wormhole().chainId(), "invalid target chain");
 
-        uint256 nativeAmount = normalizeAmount(
+        uint256 nativeAmount = deNormalizeAmount(
             transfer.amount,
-            transfer.tokenDecimals,
             getDecimals()
         );
 

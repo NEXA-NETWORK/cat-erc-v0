@@ -8,10 +8,11 @@ const { web3 } = require("@openzeppelin/test-helpers/src/setup");
 const testSigner1PK = "cfb12303a19cde580bb4dd771639b0d26bc68353645571a8cff516ab2ee113a0";
 
 const wormholeChainId = "2";
-const wormholeCoreContract = "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B";
+const wormholeCoreContract = "0xC89Ce4735882C9F0f0FE26686c53074E09B0D550";
 const finality = 1;
 const nowTime = parseInt(Math.floor(new Date().getTime() / 1000));
 const validTime = nowTime + 300;
+
 
 describe("CATERC721Proxy", () => {
   async function deployFixture() {

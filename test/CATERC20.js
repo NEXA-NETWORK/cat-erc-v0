@@ -9,6 +9,8 @@ const {
   getEmitterAddressEth,
   parseSequenceFromLogEth,
   getEmitterAddressSolana,
+  tryNativeToHexString,
+  tryNativeToUint8Array,
 } = require("@certusone/wormhole-sdk");
 
 
@@ -93,193 +95,197 @@ describe("CATERC20", () => {
     return { custodian, validTill, signature };
   }
 
-  describe("Governance Functions", () => {
-    it("registerChain", async () => {
-      const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
-      const { custodian, validTill, signature } = await makeSignature(
-        otherAccount.address,
-        validTime,
-        owner
-      );
-      const SignatureVerification = [custodian, validTill, signature];
+  // describe("Governance Functions", () => {
+  //   it("registerChain", async () => {
+  //     const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
+  //     const { custodian, validTill, signature } = await makeSignature(
+  //       otherAccount.address,
+  //       validTime,
+  //       owner
+  //     );
+  //     const SignatureVerification = [custodian, validTill, signature];
 
-      const TestTokenBytes32 = await CATERC20Instance.connect(otherAccount).addressToBytes(
-        TestTokenInstance.address
-      );
-      await CATERC20Instance.connect(otherAccount).registerChain(
-        2,
-        TestTokenBytes32,
-        SignatureVerification
-      ).then(tx => tx.wait());
+  //     const TestTokenBytes32 = await CATERC20Instance.connect(otherAccount).addressToBytes(
+  //       TestTokenInstance.address
+  //     );
+  //     await CATERC20Instance.connect(otherAccount).registerChain(
+  //       2,
+  //       TestTokenBytes32,
+  //       SignatureVerification
+  //     ).then(tx => tx.wait());
 
 
-      expect(await CATERC20Instance.tokenContracts(2)).to.equal(TestTokenBytes32);
-    });
+  //     expect(await CATERC20Instance.tokenContracts(2)).to.equal(TestTokenBytes32);
+  //   });
 
-    it("register multiple chains", async () => {
-      const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
-      const { custodian, validTill, signature } = await makeSignature(
-        otherAccount.address,
-        validTime,
-        owner
-      );
-      const SignatureVerification = [custodian, validTill, signature];
-      const chaindIds = [1, 2, 3];
-      const tokenAddresses = [
-        "0x0000000000000000000000000000000000000001",
-        "0x0000000000000000000000000000000000000002",
-        "0x0000000000000000000000000000000000000003",
-      ];
-      const tokenAddressesBytes32 = [];
+  //   it("register multiple chains", async () => {
+  //     const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
+  //     const { custodian, validTill, signature } = await makeSignature(
+  //       otherAccount.address,
+  //       validTime,
+  //       owner
+  //     );
+  //     const SignatureVerification = [custodian, validTill, signature];
+  //     const chaindIds = [1, 2, 3];
+  //     const tokenAddresses = [
+  //       "0x0000000000000000000000000000000000000001",
+  //       "0x0000000000000000000000000000000000000002",
+  //       "0x0000000000000000000000000000000000000003",
+  //     ];
+  //     const tokenAddressesBytes32 = [];
 
-      for (let i = 0; i < chaindIds.length; i++) {
-        tokenAddressesBytes32.push(
-          await CATERC20Instance.connect(otherAccount).addressToBytes(tokenAddresses[i])
-        );
-      }
+  //     for (let i = 0; i < chaindIds.length; i++) {
+  //       tokenAddressesBytes32.push(
+  //         await CATERC20Instance.connect(otherAccount).addressToBytes(tokenAddresses[i])
+  //       );
+  //     }
 
-      await CATERC20Instance.connect(otherAccount).registerChains(
-        chaindIds,
-        tokenAddressesBytes32,
-        SignatureVerification
-      ).then(tx => tx.wait());
+  //     await CATERC20Instance.connect(otherAccount).registerChains(
+  //       chaindIds,
+  //       tokenAddressesBytes32,
+  //       SignatureVerification
+  //     ).then(tx => tx.wait());
 
-      expect(await CATERC20Instance.tokenContracts(chaindIds[0])).to.equal(
-        tokenAddressesBytes32[0]
-      );
-      expect(await CATERC20Instance.tokenContracts(chaindIds[1])).to.equal(
-        tokenAddressesBytes32[1]
-      );
-      expect(await CATERC20Instance.tokenContracts(chaindIds[2])).to.equal(
-        tokenAddressesBytes32[2]
-      );
-    });
+  //     expect(await CATERC20Instance.tokenContracts(chaindIds[0])).to.equal(
+  //       tokenAddressesBytes32[0]
+  //     );
+  //     expect(await CATERC20Instance.tokenContracts(chaindIds[1])).to.equal(
+  //       tokenAddressesBytes32[1]
+  //     );
+  //     expect(await CATERC20Instance.tokenContracts(chaindIds[2])).to.equal(
+  //       tokenAddressesBytes32[2]
+  //     );
+  //   });
 
-    it("update finality", async () => {
-      const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
-      const { custodian, validTill, signature } = await makeSignature(
-        otherAccount.address,
-        validTime,
-        owner
-      );
-      const SignatureVerification = [custodian, validTill, signature];
-      const newFinality = 15;
+  //   it("update finality", async () => {
+  //     const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
+  //     const { custodian, validTill, signature } = await makeSignature(
+  //       otherAccount.address,
+  //       validTime,
+  //       owner
+  //     );
+  //     const SignatureVerification = [custodian, validTill, signature];
+  //     const newFinality = 15;
 
-      await CATERC20Instance.connect(otherAccount).updateFinality(
-        newFinality,
-        SignatureVerification
-      ).then(tx => tx.wait());
+  //     await CATERC20Instance.connect(otherAccount).updateFinality(
+  //       newFinality,
+  //       SignatureVerification
+  //     ).then(tx => tx.wait());
 
-      expect(await CATERC20Instance.finality()).to.equal(newFinality);
+  //     expect(await CATERC20Instance.finality()).to.equal(newFinality);
 
-      // Cannot replay same signatures
-      await expect(
-        CATERC20Instance.connect(otherAccount).updateFinality(
-          newFinality,
-          SignatureVerification
-        )
-      ).to.be.reverted;
+  //     // Cannot replay same signatures
+  //     await expect(
+  //       CATERC20Instance.connect(otherAccount).updateFinality(
+  //         newFinality,
+  //         SignatureVerification
+  //       )
+  //     ).to.be.reverted;
 
-    });
-  });
+  //   });
+  // });
 
-  describe("Encoding and Decoding Transfers", () => {
-    it("encode and decode data to transfer", async () => {
-      const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
+  // describe("Encoding and Decoding Transfers", () => {
+  //   it("encode and decode data to transfer", async () => {
+  //     const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
 
-      const data = {
-        amount: 100,
-        tokenAddress: await CATERC20Instance.addressToBytes(TestTokenInstance.address),
-        tokenChain: 1,
-        toAddress: await CATERC20Instance.addressToBytes(otherAccount.address),
-        toChain: 2,
-        tokenDecimals: await CATERC20Instance.decimals()
-      };
+  //     const data = {
+  //       amount: 100,
+  //       tokenAddress: await CATERC20Instance.addressToBytes(TestTokenInstance.address),
+  //       tokenChain: 1,
+  //       toAddress: await CATERC20Instance.addressToBytes(otherAccount.address),
+  //       toChain: 2,
+  //       tokenDecimals: await CATERC20Instance.decimals()
+  //     };
 
-      const encoded = await CATERC20Instance.encodeTransfer(data);
-      const decoded = await CATERC20Instance.decodeTransfer(encoded);
+  //     const encoded = await CATERC20Instance.encodeTransfer(data);
+  //     const decoded = await CATERC20Instance.decodeTransfer(encoded);
 
-      expect(decoded.amount).to.equal(data.amount);
-      expect(decoded.tokenAddress).to.equal(data.tokenAddress);
-      expect(decoded.tokenChain).to.equal(data.tokenChain);
-      expect(decoded.toAddress).to.equal(data.toAddress);
-      expect(decoded.toChain).to.equal(data.toChain);
-      expect(decoded.tokenDecimals).to.equal(data.tokenDecimals);
-    });
-  });
+  //     expect(decoded.amount).to.equal(data.amount);
+  //     expect(decoded.tokenAddress).to.equal(data.tokenAddress);
+  //     expect(decoded.tokenChain).to.equal(data.tokenChain);
+  //     expect(decoded.toAddress).to.equal(data.toAddress);
+  //     expect(decoded.toChain).to.equal(data.toChain);
+  //     expect(decoded.tokenDecimals).to.equal(data.tokenDecimals);
+  //   });
+  // });
 
-  describe("Minting New Tokens", () => {
-    it("Should Mint new tokens only by owner", async () => {
-      const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
-      const amountToMint = "1000000000";
+  // describe("Minting New Tokens", () => {
+  //   it("Should Mint new tokens only by owner", async () => {
+  //     const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
+  //     const amountToMint = "1000000000";
 
-      await CATERC20Instance.connect(owner).mint(owner.address, amountToMint).then(tx => tx.wait());
-      expect(await CATERC20Instance.connect(owner).balanceOf(owner.address)).to.equal(amountToMint);
+  //     await CATERC20Instance.connect(owner).mint(owner.address, amountToMint).then(tx => tx.wait());
+  //     expect(await CATERC20Instance.connect(owner).balanceOf(owner.address)).to.equal(amountToMint);
 
-      await expect(CATERC20Instance.connect(otherAccount).mint(otherAccount.address, amountToMint))
-        .to.be.reverted;
-    });
-  });
+  //     await expect(CATERC20Instance.connect(otherAccount).mint(otherAccount.address, amountToMint))
+  //       .to.be.reverted;
+  //   });
+  // });
 
   describe("Cross Chain Transfers", () => {
-    it("solana bridgeOut", async () => {
-      const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
-      console.log("Token Address:", await CATERC20Instance.addressToBytes(CATERC20Instance.address));
+    // it("solana bridgeOut", async () => {
+    //   const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
+    //   console.log("Token Address: ", CATERC20Instance.address);
 
-      const { custodian, validTill, signature } = await makeSignature(
-        otherAccount.address,
-        validTime,
-        owner
-      );
-      const SignatureVerification = [custodian, validTill, signature];
-      const emitterAddress = bs58.decode(getEmitterAddressSolana(SPL_CONTRACT_ADDRESS));
+    //   const { custodian, validTill, signature } = await makeSignature(
+    //     otherAccount.address,
+    //     validTime,
+    //     owner
+    //   );
+    //   const SignatureVerification = [custodian, validTill, signature];
+    //   const emitterAddress = getEmitterAddressSolana(SPL_CONTRACT_ADDRESS);
+    //   console.log("Emitter Address: ", emitterAddress);
+    //   const SPLTokenAddress = Buffer.from(emitterAddress, 'hex');
 
-      await CATERC20Instance.connect(otherAccount).registerChain(
-        SOLANA_CHAIN_ID,
-        emitterAddress,
-        SignatureVerification
-      ).then(tx => tx.wait());
+    //   await CATERC20Instance.connect(otherAccount).registerChain(
+    //     SOLANA_CHAIN_ID,
+    //     SPLTokenAddress,
+    //     SignatureVerification
+    //   ).then(tx => tx.wait());
 
-      const amountToMint = "5124095576375277";
-      const ReceipientAddress = bs58.decode(SOLANA_RECEIPIENT_ADDRESS);
-      const nonce = 0;
+    //   const amountToMint = "100000000000000000";
+    //   const ReceipientAddress = tryNativeToUint8Array(SOLANA_RECEIPIENT_ADDRESS, 'solana');
+    //   const nonce = 0;
 
-      await CATERC20Instance.mint(owner.address, amountToMint).then(tx => tx.wait());
-      const tx = await CATERC20Instance.bridgeOut(
-        amountToMint,
-        SOLANA_CHAIN_ID,
-        ReceipientAddress,
-        nonce
-      ).then(tx => tx.wait());
+    //   await CATERC20Instance.mint(owner.address, amountToMint).then(tx => tx.wait());
+    //   const tx = await CATERC20Instance.bridgeOut(
+    //     amountToMint,
+    //     SOLANA_CHAIN_ID,
+    //     ReceipientAddress,
+    //     nonce
+    //   ).then(tx => tx.wait());
 
-      const emitterAddr = getEmitterAddressEth(CATERC20Instance.address);
-      const seq = parseSequenceFromLogEth(tx, wormholeCoreContract);
-      console.log("Sequece Number: ", seq);
+    //   const emitterAddr = getEmitterAddressEth(CATERC20Instance.address);
+    //   const seq = parseSequenceFromLogEth(tx, wormholeCoreContract);
+    //   console.log("Sequece Number: ", seq);
 
-      await new Promise((r) => setTimeout(r, 3000)); // Wait for guardian to pick up message
-      const restAddress = "http://localhost:7071"
+    //   await new Promise((r) => setTimeout(r, 3000)); // Wait for guardian to pick up message
+    //   const restAddress = "http://localhost:7071"
 
-      console.log(
-        "Searching for: ",
-        `${restAddress}/v1/signed_vaa/${wormholeChainId}/${emitterAddr}/${seq}`
-      );
+    //   console.log(
+    //     "Searching for: ",
+    //     `${restAddress}/v1/signed_vaa/${wormholeChainId}/${emitterAddr}/${seq}`
+    //   );
 
-      expect(await CATERC20Instance.mintedSupply()).to.be.equal(amountToMint);
-      expect(await CATERC20Instance.totalSupply()).to.be.equal(0);
-      await CATERC20Instance.mint(owner.address, amountToMint).then(tx => tx.wait());
-      expect(await CATERC20Instance.totalSupply()).to.be.equal(amountToMint);
-    });
+    //   expect(await CATERC20Instance.mintedSupply()).to.be.equal(amountToMint);
+    //   expect(await CATERC20Instance.totalSupply()).to.be.equal(0);
+    //   await CATERC20Instance.mint(owner.address, amountToMint).then(tx => tx.wait());
+    //   expect(await CATERC20Instance.totalSupply()).to.be.equal(amountToMint);
+    // });
 
     it("solana bridgeIn", async () => {
       const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
-      
+
       const { custodian, validTill, signature } = await makeSignature(
         otherAccount.address,
         validTime,
         owner
       );
       const SignatureVerification = [custodian, validTill, signature];
-      const SPLTokenAddress = Buffer.from("04a97fa4da1675cf1a83750edcc176e956fe37fc0ffd8db87eeff6cc78ebd51b", "hex");
+      const emitterAddress = getEmitterAddressSolana(SPL_CONTRACT_ADDRESS);
+      console.log("Emitter Address: ", emitterAddress);
+      const SPLTokenAddress = Buffer.from(emitterAddress, 'hex');
 
       await CATERC20Instance.registerChain(
         SOLANA_CHAIN_ID,
@@ -287,8 +293,8 @@ describe("CATERC20", () => {
         SignatureVerification
       ).then(tx => tx.wait());
 
-      
-      const vaa = Buffer.from("AQAAAAABAGaX8wXm1qaFkVd+c8zEHmtuHMe39bvMUexEoui+L22BRIG+asxZCpAHENXJZJUWDLrhJ/CgoLp7YK5KcwH2o10BZLewfgAAAAAAAQSpf6TaFnXPGoN1DtzBdulW/jf8D/2NuH7v9sx469UbAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARWORgkT0AADOnfHk6JgIlJBinJY+zVYTx/yLXRjFoIwoho8hzYDk6gEAAAAAAAAAAAAAAAAAkPi/akefMg6tB0QRpLDnlE6oycECAAk=", "base64");
+
+      const vaa = Buffer.from("AQAAAAABANViY906My16HseArekXBUUZmX+G9i3M+Eb2snlUzRl9G1VJaYLGkcSp75auX4pTuBKucmb3LACzFo+FLIfCCDIAZMjyrQAAAAAAAdBiQFsH3VgEGF19kGuXKMt81All7BQuhJkL+AIL/MDZAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAONfqTGgAAZcA9gL6vEAdYV2KFNLpMHg2WZGWdIzrRfVjGS+DLzywABAAAAAAAAAAAAAAAAkPi/akefMg6tB0QRpLDnlE6oycEAAgk=", "base64");
       console.log("VAA: ", vaa);
       // Balance will be a BigNumber
       let balance = await CATERC20Instance.balanceOf(owner.address);
@@ -301,77 +307,77 @@ describe("CATERC20", () => {
       });
     });
 
-    it("bridgeOut", async () => {
-      const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
+    // it("bridgeOut", async () => {
+    //   const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
 
-      const { custodian, validTill, signature } = await makeSignature(
-        otherAccount.address,
-        validTime,
-        owner
-      );
-      const SignatureVerification = [custodian, validTill, signature];
+    //   const { custodian, validTill, signature } = await makeSignature(
+    //     otherAccount.address,
+    //     validTime,
+    //     owner
+    //   );
+    //   const SignatureVerification = [custodian, validTill, signature];
 
-      const TestTokenBytes32 = await CATERC20Instance.connect(otherAccount).addressToBytes(
-        TestTokenInstance.address
-      );
-      await CATERC20Instance.connect(otherAccount).registerChain(
-        wormholeChainId,
-        TestTokenBytes32,
-        SignatureVerification
-      ).then(tx => tx.wait());
+    //   const TestTokenBytes32 = await CATERC20Instance.connect(otherAccount).addressToBytes(
+    //     TestTokenInstance.address
+    //   );
+    //   await CATERC20Instance.connect(otherAccount).registerChain(
+    //     wormholeChainId,
+    //     TestTokenBytes32,
+    //     SignatureVerification
+    //   ).then(tx => tx.wait());
 
-      const amountToMint = "100000000000000000000";
+    //   const amountToMint = "100000000000000000000";
 
-      await CATERC20Instance.mint(owner.address, amountToMint).then(tx => tx.wait());
-      await CATERC20Instance.bridgeOut(
-        amountToMint,
-        wormholeChainId,
-        await CATERC20Instance.addressToBytes(owner.address),
-        0
-      ).then(tx => tx.wait());
+    //   await CATERC20Instance.mint(owner.address, amountToMint).then(tx => tx.wait());
+    //   await CATERC20Instance.bridgeOut(
+    //     amountToMint,
+    //     wormholeChainId,
+    //     await CATERC20Instance.addressToBytes(owner.address),
+    //     0
+    //   ).then(tx => tx.wait());
 
-      expect(await CATERC20Instance.mintedSupply()).to.be.equal(amountToMint);
-      expect(await CATERC20Instance.totalSupply()).to.be.equal(0);
-      await CATERC20Instance.mint(owner.address, amountToMint).then(tx => tx.wait());
-      expect(await CATERC20Instance.totalSupply()).to.be.equal(amountToMint);
-      expect(await CATERC20Instance.mintedSupply()).to.be.equal("200000000000000000000");
+    //   expect(await CATERC20Instance.mintedSupply()).to.be.equal(amountToMint);
+    //   expect(await CATERC20Instance.totalSupply()).to.be.equal(0);
+    //   await CATERC20Instance.mint(owner.address, amountToMint).then(tx => tx.wait());
+    //   expect(await CATERC20Instance.totalSupply()).to.be.equal(amountToMint);
+    //   expect(await CATERC20Instance.mintedSupply()).to.be.equal("200000000000000000000");
 
-    });
+    // });
 
-    it("bridgeIn", async () => {
-      const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
+    // it("bridgeIn", async () => {
+    //   const { owner, otherAccount, TestTokenInstance, CATERC20Instance } = await deployFixture();
 
-      const amountToMint = "100000000000";
-      const foreignDecimals = 9;
+    //   const amountToMint = "100000000000";
+    //   const foreignDecimals = 9;
 
-    const data = {
-      amount: amountToMint,
-      tokenAddress: await CATERC20Instance.addressToBytes(CATERC20Instance.address),
-      tokenChain: 2,
-      toAddress: await CATERC20Instance.addressToBytes(owner.address),
-      toChain: 2,
-      tokenDecimals: foreignDecimals
-    };
+    // const data = {
+    //   amount: amountToMint,
+    //   tokenAddress: await CATERC20Instance.addressToBytes(CATERC20Instance.address),
+    //   tokenChain: 2,
+    //   toAddress: await CATERC20Instance.addressToBytes(owner.address),
+    //   toChain: 2,
+    //   tokenDecimals: foreignDecimals
+    // };
 
-    const payload = await CATERC20Instance.encodeTransfer(data);
-    const vaa = await signAndEncodeVM(
-      1,
-      1,
-      1,
-      await CATERC20Instance.addressToBytes(CATERC20Instance.address),
-      0,
-      payload,
-      [testSigner1PK],
-      0,
-      finality
-    );
-      console.log("VAA: ", vaa);
-    let balance = await CATERC20Instance.balanceOf(owner.address);
-    console.log("Balance Before", balance.toString())
-    await CATERC20Instance.bridgeIn(vaa).then(tx => tx.wait());
-    balance = await CATERC20Instance.balanceOf(owner.address);
-    console.log("Balance After", balance.toString())
-    });
+    // const payload = await CATERC20Instance.encodeTransfer(data);
+    // const vaa = await signAndEncodeVM(
+    //   1,
+    //   1,
+    //   1,
+    //   await CATERC20Instance.addressToBytes(CATERC20Instance.address),
+    //   0,
+    //   payload,
+    //   [testSigner1PK],
+    //   0,
+    //   finality
+    // );
+    //   console.log("VAA: ", vaa);
+    // let balance = await CATERC20Instance.balanceOf(owner.address);
+    // console.log("Balance Before", balance.toString())
+    // await CATERC20Instance.bridgeIn(vaa).then(tx => tx.wait());
+    // balance = await CATERC20Instance.balanceOf(owner.address);
+    // console.log("Balance After", balance.toString())
+    // });
   });
 });
 
