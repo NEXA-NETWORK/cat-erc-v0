@@ -9,8 +9,8 @@ const testSigner1PK = "cfb12303a19cde580bb4dd771639b0d26bc68353645571a8cff516ab2
 
 const name = "CATERC20Test";
 const symbol = "CATTEST";
-const decimals = 18;
-const maxSupply = "1000000000000000000000";
+const decimals = 9;
+const maxSupply = "1000000000000";
 
 const wormholeChainId = "1";
 const wormholeCoreContract = "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B";
@@ -202,7 +202,7 @@ describe("CATERC20", () => {
         SignatureVerification
       );
 
-      const amountToMint = "100000000000000000000";
+      const amountToMint = "100000000000";
 
       await CATERC20Instance.mint(owner.address, amountToMint);
       await CATERC20Instance.bridgeOut(
@@ -216,7 +216,7 @@ describe("CATERC20", () => {
       expect(await CATERC20Instance.totalSupply()).to.be.equal(0);
       await CATERC20Instance.mint(owner.address, amountToMint);
       expect(await CATERC20Instance.totalSupply()).to.be.equal(amountToMint);
-      expect(await CATERC20Instance.mintedSupply()).to.be.equal("200000000000000000000");
+      expect(await CATERC20Instance.mintedSupply()).to.be.equal("200000000000");
 
       });
 

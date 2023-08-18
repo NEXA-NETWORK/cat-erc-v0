@@ -70,8 +70,9 @@ contract CATERC20Proxy is Context, CATERC20Governance, CATERC20Events, ERC165 {
 
         uint256 amountReceived = nativeAsset().balanceOf(address(this)) - balanceBefore;
 
+        uint256 foreignAmount = normalizeAmount(amountReceived, getDecimals());
         CATERC20Structs.CrossChainPayload memory transfer = CATERC20Structs.CrossChainPayload({
-            amount: amountReceived,
+            amount: foreignAmount,
             tokenAddress: tokenAddress,
             tokenChain: tokenChain,
             toAddress: recipient,
@@ -90,7 +91,8 @@ contract CATERC20Proxy is Context, CATERC20Governance, CATERC20Events, ERC165 {
             tokenChain,
             recipientChain,
             addressToBytes(_msgSender()),
-            recipient
+            recipient,
+            getDecimals()
         );
     } // end of function
 
@@ -116,16 +118,15 @@ contract CATERC20Proxy is Context, CATERC20Governance, CATERC20Events, ERC165 {
 
         require(transfer.toChain == wormhole().chainId(), "invalid target chain");
 
-        uint256 nativeAmount = normalizeAmount(
+        uint256 nativeAmount = deNormalizeAmount(
             transfer.amount,
-            transfer.tokenDecimals,
             getDecimals()
         );
 
         // Unlock the tokens in this contract and Transfer out from contract to user
         SafeERC20.safeTransfer(nativeAsset(), transferRecipient, nativeAmount);
 
-        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress);
+        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress, transfer.tokenDecimals);
 
         return vm.payload;
     }

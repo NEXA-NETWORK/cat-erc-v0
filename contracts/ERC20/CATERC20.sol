@@ -27,6 +27,8 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
         uint256 maxSupply
     ) public onlyOwner {
         require(isInitialized() == false, "Already Initialized");
+        require(maxSupply <= type(uint64).max, "Max supply can't exceed maximum u64 value");
+        require(chainId != 0, "Invalid chainId");
 
         setChainId(chainId);
         setWormhole(wormhole);
@@ -57,6 +59,7 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
     ) external payable returns (uint64 sequence) {
         require(isInitialized() == true, "Not Initialized");
         require(evmChainId() == block.chainid, "unsupported fork");
+        require(amount <= type(uint64).max, "Amount exceeds u64");
         
         uint256 fee = wormhole().messageFee();
         require(msg.value >= fee, "Not enough fee provided to publish message");
@@ -65,8 +68,10 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
 
         _burn(_msgSender(), amount);
 
+        uint256 foreignAmount = normalizeAmount(amount, getDecimals());
+
         CATERC20Structs.CrossChainPayload memory transfer = CATERC20Structs.CrossChainPayload({
-            amount: amount,
+            amount: foreignAmount,
             tokenAddress: tokenAddress,
             tokenChain: tokenChain,
             toAddress: recipient,
@@ -81,11 +86,12 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
         );
 
         emit bridgeOutEvent(
-            amount,
+            foreignAmount,
             tokenChain,
             recipientChain,
             addressToBytes(_msgSender()),
-            recipient
+            recipient,
+            getDecimals()
         );
     } // end of function
 
@@ -111,15 +117,14 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
 
         require(transfer.toChain == wormhole().chainId(), "invalid target chain");
 
-        uint256 nativeAmount = normalizeAmount(
+        uint256 nativeAmount = deNormalizeAmount(
             transfer.amount,
-            transfer.tokenDecimals,
             getDecimals()
         );
 
         _mint(transferRecipient, nativeAmount);
 
-        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress);
+        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress, transfer.tokenDecimals);
 
         return vm.payload;
     }
