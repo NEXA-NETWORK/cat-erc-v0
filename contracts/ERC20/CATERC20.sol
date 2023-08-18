@@ -60,7 +60,7 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
         require(isInitialized() == true, "Not Initialized");
         require(evmChainId() == block.chainid, "unsupported fork");
         require(amount <= type(uint64).max, "Amount exceeds u64");
-        
+
         uint256 fee = wormhole().messageFee();
         require(msg.value >= fee, "Not enough fee provided to publish message");
         uint16 tokenChain = wormhole().chainId();
@@ -117,14 +117,17 @@ contract CATERC20 is Context, ERC20, CATERC20Governance, CATERC20Events, ERC165 
 
         require(transfer.toChain == wormhole().chainId(), "invalid target chain");
 
-        uint256 nativeAmount = deNormalizeAmount(
-            transfer.amount,
-            getDecimals()
-        );
+        uint256 nativeAmount = deNormalizeAmount(transfer.amount, getDecimals());
 
         _mint(transferRecipient, nativeAmount);
 
-        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress, transfer.tokenDecimals);
+        emit bridgeInEvent(
+            nativeAmount,
+            transfer.tokenChain,
+            transfer.toChain,
+            transfer.toAddress,
+            transfer.tokenDecimals
+        );
 
         return vm.payload;
     }

@@ -118,15 +118,18 @@ contract CATERC20Proxy is Context, CATERC20Governance, CATERC20Events, ERC165 {
 
         require(transfer.toChain == wormhole().chainId(), "invalid target chain");
 
-        uint256 nativeAmount = deNormalizeAmount(
-            transfer.amount,
-            getDecimals()
-        );
+        uint256 nativeAmount = deNormalizeAmount(transfer.amount, getDecimals());
 
         // Unlock the tokens in this contract and Transfer out from contract to user
         SafeERC20.safeTransfer(nativeAsset(), transferRecipient, nativeAmount);
 
-        emit bridgeInEvent(nativeAmount, transfer.tokenChain, transfer.toChain, transfer.toAddress, transfer.tokenDecimals);
+        emit bridgeInEvent(
+            nativeAmount,
+            transfer.tokenChain,
+            transfer.toChain,
+            transfer.toAddress,
+            transfer.tokenDecimals
+        );
 
         return vm.payload;
     }
