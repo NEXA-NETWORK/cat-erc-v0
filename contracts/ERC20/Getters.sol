@@ -60,16 +60,16 @@ contract CATERC20Getters is CATERC20State {
         return _state.signaturesUsed[signature];
     }
 
-    function normalizeAmount(
-        uint256 amount,
-        uint8 foreignDecimals,
-        uint8 localDecimals
-    ) internal pure returns (uint256) {
-        if (foreignDecimals > localDecimals) {
-            amount /= 10 ** (foreignDecimals - localDecimals);
+    function normalizeAmount(uint256 amount, uint8 decimals) public pure returns (uint256) {
+        if (decimals > 8) {
+            amount /= 10 ** (decimals - 8);
         }
-        if (localDecimals > foreignDecimals) {
-            amount *= 10 ** (localDecimals - foreignDecimals);
+        return amount;
+    }
+
+    function deNormalizeAmount(uint256 amount, uint8 decimals) public pure returns (uint256) {
+        if (decimals > 8) {
+            amount *= 10 ** (decimals - 8);
         }
         return amount;
     }

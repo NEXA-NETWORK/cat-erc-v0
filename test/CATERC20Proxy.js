@@ -188,12 +188,12 @@ describe("CATERC20Proxy", () => {
           SignatureVerification
         );
 
-      const amountToMint = "100000000000000000000";
+      const amountToMint = "100000000000";
 
       await TestTokenInstance.mint(amountToMint);
       await TestTokenInstance.approve(CATERC20ProxyInstance.address, amountToMint);
       await CATERC20ProxyInstance.bridgeOut(
-        amountToMint,
+        await CATERC20ProxyInstance.normalizeAmount(amountToMint, 18),
         wormholeChainId,
         await CATERC20ProxyInstance.addressToBytes(owner.address),
         0
@@ -207,7 +207,7 @@ describe("CATERC20Proxy", () => {
       const amountToMint = "100000000000000000000";
 
       const data = {
-        amount: amountToMint,
+        amount: await CATERC20ProxyInstance.normalizeAmount(amountToMint, 18),
         tokenAddress: await CATERC20ProxyInstance.addressToBytes(
           CATERC20ProxyInstance.address
         ),

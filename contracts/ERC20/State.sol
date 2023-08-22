@@ -10,7 +10,8 @@ contract CATERC20Events {
         uint256 tokenAmount,
         uint256 fromChain,
         uint256 toChain,
-        bytes32 indexed toAddress
+        bytes32 indexed toAddress,
+        uint16 foreignDecimals
     );
 
     event bridgeOutEvent(
@@ -18,7 +19,8 @@ contract CATERC20Events {
         uint256 fromChain,
         uint256 toChain,
         bytes32 indexed fromAddress,
-        bytes32 indexed toAddress
+        bytes32 indexed toAddress,
+        uint16 localDecimals
     );
 }
 
